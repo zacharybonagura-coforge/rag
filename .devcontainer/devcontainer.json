@@ -1,0 +1,15 @@
+{
+    "name": "rag",
+    "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+    "workspaceFolder": "/workspaces/rag",
+    "remoteUser": "vscode",
+    "mounts": [
+      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "containerEnv": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "UV_LINK_MODE": "copy",
+      "SERVICE_ENV": "local"
+    },
+    "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && . $HOME/.local/bin/env && uv sync --frozen"
+  }
