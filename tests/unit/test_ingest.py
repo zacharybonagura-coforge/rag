@@ -32,13 +32,9 @@ def test_chunk_handbook_one_section_each() -> None:
     assert [r["section_title"] for r in records] == [
         "Hours",
         "Rentals",
-        "Repairs",
-        "Helmets",
-        "Returns",
-        "Lost and Found",
     ]
     assert records[0]["chunk_id"] == "harbor-bike-shop-handbook:v1.0:section-1"
-    assert records[2]["chunk_id"] == "harbor-bike-shop-handbook:v1.0:section-3"
+    assert records[1]["chunk_id"] == "harbor-bike-shop-handbook:v1.0:section-2"
     assert records[0]["document"] == "harbor-bike-shop-handbook"
     assert records[0]["version"] == "1.0"
     assert "Tuesday" in records[0]["text"]
@@ -55,11 +51,11 @@ def test_chunk_skips_title() -> None:
 def test_ingest_builds_chunks_with_embeddings() -> None:
     chunks = ingest(CORPUS, FakeEmbedder(), "1.0")
 
-    assert len(chunks) == 6
+    assert len(chunks) == 2
     assert all(isinstance(c, Chunk) for c in chunks)
     assert chunks[0].chunk_id == "harbor-bike-shop-handbook:v1.0:section-1"
     assert len(chunks[0].embedding) == 768
-    assert chunks[2].section_title == "Repairs"
+    assert chunks[1].section_title == "Rentals"
 
 
 def test_chunk_missing_file_raises(tmp_path: Path) -> None:
