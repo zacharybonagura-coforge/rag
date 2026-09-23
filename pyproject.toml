@@ -45,3 +45,7 @@ torch = { index = "pytorch-cpu" }
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+
+[tool.mypy]
+mypy_path = "src"
+explicit_package_bases = true
