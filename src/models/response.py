@@ -17,6 +17,8 @@ class Citation(BaseModel):
 class RetrievedChunkRef(BaseModel):
     """One retrieved neighbor, identified by section and cosine distance."""
 
+    document: str
+    version: str
     section: str
     section_title: str
     distance: float
@@ -49,6 +51,8 @@ def build_response(query: str, answer: str, hits: list[ScoredChunk]) -> RagRespo
         ),
         retrieved_chunks=[
             RetrievedChunkRef(
+                document=hit.chunk.document,
+                version=hit.chunk.version,
                 section=hit.chunk.section,
                 section_title=hit.chunk.section_title,
                 distance=hit.score,
