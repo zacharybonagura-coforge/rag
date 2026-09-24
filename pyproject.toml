@@ -11,6 +11,7 @@ dependencies = [
     "pydantic==2.9.2",
     "pymupdf4llm>=1.28.2",
     "python-docx>=1.2.0",
+    "rank-bm25>=0.2.2",
     "sentence-transformers>=6.1.0",
     "torch>=2.2",
 ]
@@ -53,5 +54,5 @@ mypy_path = "src"
 explicit_package_bases = true
 
 [[tool.mypy.overrides]]
-module = ["pymupdf4llm", "pgvector.psycopg"]
+module = ["pymupdf4llm", "pgvector.psycopg", "rank_bm25"]
 ignore_missing_imports = true

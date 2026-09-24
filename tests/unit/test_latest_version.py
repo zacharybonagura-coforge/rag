@@ -1,14 +1,4 @@
-import re
-
-
-def document_family(document: str) -> str:
-    return re.sub(r"-v[0-9]+$", "", document)
-
-
-def version_key(version: str) -> tuple[int, ...]:
-    if not version:
-        return (0,)
-    return tuple(int(part) for part in version.split("."))
+from retrieve import document_family, version_key
 
 
 def latest_docs(rows: list[tuple[str, str]]) -> set[tuple[str, str]]:
