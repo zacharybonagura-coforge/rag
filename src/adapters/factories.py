@@ -1,13 +1,13 @@
 """Build concrete adapters from Settings."""
 
+from adapters.embeddings.base import EmbeddingAdapter
+from adapters.embeddings.sentence_transformer import SentenceTransformerEmbeddingAdapter
+from adapters.generation.base import ModelAdapter
+from adapters.generation.ollama import OllamaAdapter
+from adapters.store.base import VectorStoreAdapter
+from adapters.store.pgvector import PgVectorStoreAdapter
 from config import Settings
-from embeddings.base import EmbeddingAdapter
-from embeddings.sentence_transformer import SentenceTransformerEmbeddingAdapter
 from enums import EmbeddingProvider, ModelProvider, StoreProvider
-from generation.base import ModelAdapter
-from generation.ollama import OllamaAdapter
-from store.base import VectorStoreAdapter
-from store.pgvector import PgVectorStoreAdapter
 
 
 def build_embedder(settings: Settings) -> EmbeddingAdapter:

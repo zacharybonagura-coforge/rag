@@ -5,7 +5,7 @@ import os
 import psycopg
 from pgvector.psycopg import register_vector  # type: ignore[import-untyped]
 
-from models.chunk import Chunk, ScoredChunk
+from schemas.chunk import Chunk, ScoredChunk
 
 
 class PgVectorStoreAdapter:

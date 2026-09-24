@@ -2,7 +2,7 @@
 
 from typing import Protocol
 
-from models.chunk import Chunk, ScoredChunk
+from schemas.chunk import Chunk, ScoredChunk
 
 
 class VectorStoreAdapter(Protocol):

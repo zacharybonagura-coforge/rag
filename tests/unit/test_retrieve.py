@@ -2,8 +2,8 @@ from collections.abc import Sequence
 
 import pytest
 
-from models.chunk import Chunk, ScoredChunk
 from retrieve import retrieve
+from schemas.chunk import Chunk, ScoredChunk
 
 RETURNS = Chunk(
     chunk_id="harbor-bike-shop-handbook:v1.0:section-5",

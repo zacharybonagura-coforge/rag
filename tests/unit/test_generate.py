@@ -1,7 +1,7 @@
 import pytest
 
 from generate import generate
-from models.chunk import Chunk, ScoredChunk
+from schemas.chunk import Chunk, ScoredChunk
 
 HOURS = Chunk(
     chunk_id="harbor-bike-shop-handbook:v1.0:section-1",

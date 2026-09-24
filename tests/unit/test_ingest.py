@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from ingest import chunk, ingest
-from models.chunk import Chunk
+from schemas.chunk import Chunk
 
 CORPUS_FILE = Path("data/corpus-tiny/harbor-bike-shop-handbook.md")
 CORPUS_DIR = Path("data/corpus-tiny")

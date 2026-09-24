@@ -1,8 +1,8 @@
 """Retrieve nearest chunks for a natural-language query."""
 
-from embeddings.base import EmbeddingAdapter
-from models.chunk import ScoredChunk
-from store.base import VectorStoreAdapter
+from adapters.embeddings.base import EmbeddingAdapter
+from adapters.store.base import VectorStoreAdapter
+from schemas.chunk import ScoredChunk
 
 
 def retrieve(

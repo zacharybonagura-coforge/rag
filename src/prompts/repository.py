@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from models.chunk import ScoredChunk
+from schemas.chunk import ScoredChunk
 
 TEMPLATES = Path(__file__).resolve().parent / "templates"
 

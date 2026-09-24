@@ -1,8 +1,8 @@
 """Generate an answer from a query and retrieved chunks."""
 
-from generation.base import ModelAdapter
-from models.chunk import ScoredChunk
+from adapters.generation.base import ModelAdapter
 from prompts.repository import PromptRepository
+from schemas.chunk import ScoredChunk
 
 
 def generate(

@@ -5,12 +5,12 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from factories import build_embedder, build_generator, build_store
+from adapters.factories import build_embedder, build_generator, build_store
 from config import Settings
 from generate import generate
 from ingest import ingest
-from models.response import RagResponse, build_response
 from retrieve import retrieve
+from schemas.response import RagResponse, build_response
 
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "data/corpus-tiny/"

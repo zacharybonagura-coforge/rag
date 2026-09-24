@@ -3,8 +3,8 @@
 import re
 from pathlib import Path
 
-from embeddings.base import EmbeddingAdapter
-from models.chunk import Chunk
+from adapters.embeddings.base import EmbeddingAdapter
+from schemas.chunk import Chunk
 
 VERSION_RE = re.compile(r"\(Version\s+([^)]+)\)", re.IGNORECASE)
 

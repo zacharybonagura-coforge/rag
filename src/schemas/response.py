@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 
-from models.chunk import ScoredChunk
+from schemas.chunk import ScoredChunk
 
 
 class Citation(BaseModel):
