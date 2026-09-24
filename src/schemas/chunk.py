@@ -14,7 +14,11 @@ class Chunk(BaseModel):
     version: str
     section: str
     section_title: str
+    subsection: str = ""
+    subsection_title: str = ""
     text: str
+    part: int = 0
+    page: int | None = None
     embedding: list[float]
 
 class ScoredChunk(BaseModel):

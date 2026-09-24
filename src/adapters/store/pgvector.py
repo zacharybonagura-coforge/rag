@@ -36,8 +36,9 @@ class PgVectorStoreAdapter:
                         """
                         INSERT INTO chunks (
                             chunk_id, document, version, section,
-                            section_title, text, embedding
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            section_title, text, subsection,
+                            subsection_title, part, page, embedding
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,
                         (
                             chunk.chunk_id,
@@ -46,6 +47,10 @@ class PgVectorStoreAdapter:
                             chunk.section,
                             chunk.section_title,
                             chunk.text,
+                            chunk.subsection,
+                            chunk.subsection_title,
+                            chunk.part,
+                            chunk.page,
                             chunk.embedding,
                         ),
                     )
@@ -56,11 +61,12 @@ class PgVectorStoreAdapter:
         with self._connect() as conn, conn.cursor() as cur:
             cur.execute(
                 """
-                    SELECT chunk_id, document, version, section,
-                           section_title, text, embedding
-                    FROM chunks
-                    ORDER BY section
-                    """
+                SELECT chunk_id, document, version, section,
+                    section_title, text, subsection,
+                    subsection_title, part, page, embedding
+                FROM chunks
+                ORDER BY section
+                """
             )
             rows = cur.fetchall()
         return [
@@ -71,7 +77,11 @@ class PgVectorStoreAdapter:
                 section=row[3],
                 section_title=row[4],
                 text=row[5],
-                embedding=list(row[6]),
+                subsection=row[6],
+                subsection_title=row[7],
+                part=row[8],
+                page=row[9],
+                embedding=list(row[10]),
             )
             for row in rows
         ]
@@ -83,11 +93,11 @@ class PgVectorStoreAdapter:
     ) -> list[ScoredChunk]:
         """Return the ``k`` nearest chunks by cosine distance."""
         with self._connect() as conn, conn.cursor() as cur:
-            # Cosine Distance = Lower scores are better
             cur.execute(
                 """
                 SELECT chunk_id, document, version, section,
-                    section_title, text, embedding,
+                    section_title, text, subsection,
+                    subsection_title, part, page, embedding,
                     (embedding <=> %s::vector) AS distance
                 FROM chunks
                 ORDER BY embedding <=> %s::vector ASC
@@ -105,9 +115,13 @@ class PgVectorStoreAdapter:
                     section=row[3],
                     section_title=row[4],
                     text=row[5],
-                    embedding=list(row[6]),
+                    subsection=row[6],
+                    subsection_title=row[7],
+                    part=row[8],
+                    page=row[9],
+                    embedding=list(row[10]),
                 ),
-                score=float(row[7]),
+                score=float(row[11]),
             )
             for row in rows
         ]

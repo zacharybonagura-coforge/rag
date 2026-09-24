@@ -12,6 +12,10 @@ class Citation(BaseModel):
     version: str
     section: str
     section_title: str
+    subsection: str = ""
+    subsection_title: str = ""
+    part: int = 0
+    page: int | None = None
 
 
 class RetrievedChunkRef(BaseModel):
@@ -21,6 +25,10 @@ class RetrievedChunkRef(BaseModel):
     version: str
     section: str
     section_title: str
+    subsection: str = ""
+    subsection_title: str = ""
+    part: int = 0
+    page: int | None = None
     distance: float
 
 
@@ -45,6 +53,10 @@ def build_response(query: str, answer: str, hits: list[ScoredChunk]) -> RagRespo
                 version=top.chunk.version,
                 section=top.chunk.section,
                 section_title=top.chunk.section_title,
+                subsection=top.chunk.subsection,
+                subsection_title=top.chunk.subsection_title,
+                part=top.chunk.part,
+                page=top.chunk.page,
             )
             if top
             else None
@@ -55,6 +67,10 @@ def build_response(query: str, answer: str, hits: list[ScoredChunk]) -> RagRespo
                 version=hit.chunk.version,
                 section=hit.chunk.section,
                 section_title=hit.chunk.section_title,
+                subsection=hit.chunk.subsection,
+                subsection_title=hit.chunk.subsection_title,
+                part=hit.chunk.part,
+                page=hit.chunk.page,
                 distance=hit.score,
             )
             for hit in hits
