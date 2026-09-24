@@ -5,7 +5,7 @@ import pytest
 from docx import Document
 
 from blocks import load
-from ingest import _soft_end, _windows, chunk, ingest
+from ingest import DocumentStatus, LoadError, _soft_end, _windows, chunk, ingest
 from schemas.chunk import Chunk
 
 CORPUS_FILE = Path("data/corpus-tiny/harbor-bike-shop-handbook.md")
@@ -51,7 +51,7 @@ def test_chunk_skips_title() -> None:
 
 
 def test_ingest_builds_chunks_with_embeddings() -> None:
-    chunks = ingest(CORPUS_DIR, FakeEmbedder())
+    chunks, _ = ingest(CORPUS_DIR, FakeEmbedder())
 
     assert len(chunks) == 2
     assert all(isinstance(c, Chunk) for c in chunks)
@@ -297,7 +297,7 @@ def test_load_rejects_unknown_suffix(tmp_path: Path) -> None:
 
 def test_ingest_reads_docx(tmp_path: Path) -> None:
     _write_docx(tmp_path / "handbook.docx")
-    chunks = ingest(tmp_path, FakeEmbedder())
+    chunks, _ = ingest(tmp_path, FakeEmbedder())
 
     assert [c.chunk_id for c in chunks] == [
         "handbook:v1.0:section-1:sub-0",
@@ -384,7 +384,7 @@ def test_ingest_reads_pdf(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> No
     path = tmp_path / "handbook.pdf"
     path.write_bytes(b"%PDF")
     monkeypatch.setattr("blocks.pymupdf4llm.to_markdown", lambda *_a, **_k: _pdf_pages())
-    chunks = ingest(tmp_path, FakeEmbedder())
+    chunks, _ = ingest(tmp_path, FakeEmbedder())
 
     assert [c.chunk_id for c in chunks] == [
         "handbook:v1.0:section-1:sub-0",
@@ -393,3 +393,36 @@ def test_ingest_reads_pdf(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> No
     ]
     assert chunks[1].text.count("Cookies") >= 1
     assert chunks[2].page == 2
+
+
+def test_chunk_empty_file_returns_no_records(tmp_path: Path) -> None:
+    path = tmp_path / "blank.md"
+    path.write_text("")
+    assert chunk(path) == []
+def test_chunk_title_only_returns_no_records(tmp_path: Path) -> None:
+    path = tmp_path / "title.md"
+    path.write_text("# Title only (Version 1)\n")
+    assert chunk(path) == []
+def test_ingest_flags_no_text_and_keeps_good_file(tmp_path: Path) -> None:
+    (tmp_path / "blank.md").write_text("")
+    (tmp_path / "ok.md").write_text("# Ok (Version 1.0)\n\n## Hours\nOpen daily.\n")
+    chunks, documents = ingest(tmp_path, FakeEmbedder())
+    assert [c.document for c in chunks] == ["ok"]
+    assert documents == [
+        DocumentStatus("blank", False, "no_text"),
+        DocumentStatus("ok", True, ""),
+    ]
+def test_ingest_flags_unparsable(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    (tmp_path / "bad.md").write_text("# Bad (Version 1.0)\n\n## Hours\nOpen.\n")
+    def boom(path: Path) -> list[object]:
+        raise ValueError("corrupt")
+    monkeypatch.setattr("ingest.load", boom)
+    chunks, documents = ingest(tmp_path, FakeEmbedder())
+    assert chunks == []
+    assert documents == [DocumentStatus("bad", False, "unparsable")]
+def test_chunk_load_error_wraps(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = tmp_path / "bad.md"
+    path.write_text("x")
+    monkeypatch.setattr("ingest.load", lambda _path: (_ for _ in ()).throw(ValueError("corrupt")))
+    with pytest.raises(LoadError, match="unparsable"):
+        chunk(path)

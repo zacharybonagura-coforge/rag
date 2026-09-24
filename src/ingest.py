@@ -1,12 +1,24 @@
 """Split handbooks into section and subsection chunks."""
 
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
 from adapters.embeddings.base import EmbeddingAdapter
 from blocks import load
 from schemas.chunk import Chunk
+
+
+class LoadError(Exception):
+    """Loader could not read the file."""
+
+@dataclass(frozen=True)
+class DocumentStatus:
+    document: str
+    ok: bool
+    reason: str  # "" | "unparsable" | "no_text"
+
 
 # Match "(Version <value>)" in a title and capture the value, e.g. "(Version 3.2)" -> "3.2".
 # \( literal "(", Version case-insensitive, \s+ one or more spaces,
@@ -117,7 +129,14 @@ def chunk(
     preamble: list[str] = []
     saw_section = False
 
-    for block in load(path):
+    try:
+        blocks = load(path)
+    except FileNotFoundError:
+        raise
+    except Exception as exc:
+        raise LoadError(f"unparsable: {path}") from exc
+    
+    for block in blocks:
         if block.kind == "title":
             title_text = block.text
             try:
@@ -174,22 +193,36 @@ def ingest(
     *,
     max_chars: int = 500,
     overlap: int = 100,
-) -> list[Chunk]:
-    """Chunk every ``*.md`` under ``root`` and embed each chunk body."""
+) -> tuple[list[Chunk], list[DocumentStatus]]:
+    """Chunk every handbook under ``root``. Skip unreadable or empty files."""
     paths = (
         sorted(root.glob("*.md"))
         + sorted(root.glob("*.docx"))
         + sorted(root.glob("*.pdf"))
     )
     if not paths:
-        raise FileNotFoundError(f"no markdown or docx files in {root}")
-    records = [
-        record
-        for path in paths
-        for record in chunk(path, max_chars=max_chars, overlap=overlap)
-    ]
+        raise FileNotFoundError(f"no markdown, docx, or pdf files in {root}")
+
+    records: list[dict[str, str | int | bool | None]] = []
+    documents: list[DocumentStatus] = []
+    for path in paths:
+        try:
+            file_records = chunk(path, max_chars=max_chars, overlap=overlap)
+        except LoadError:
+            documents.append(DocumentStatus(path.stem, False, "unparsable"))
+            continue
+        if not file_records:
+            documents.append(DocumentStatus(path.stem, False, "no_text"))
+            continue
+        documents.append(DocumentStatus(path.stem, True, ""))
+        records.extend(file_records)
+
+    if not records:
+        return [], documents
+
     vectors = embedder.embed_documents([str(r["text"]) for r in records])
-    return [
+    chunks = [
         Chunk(**cast(dict[str, Any], record), embedding=vector)
         for record, vector in zip(records, vectors, strict=True)
     ]
+    return chunks, documents

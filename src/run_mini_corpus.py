@@ -45,8 +45,12 @@ def main() -> None:
     model = build_generator(settings)
 
     if not store.load_chunks():
-        chunks = ingest(CORPUS, embedder)
+        chunks, documents = ingest(CORPUS, embedder)
         store.save_chunks(chunks)
+        for doc in documents:
+            if not doc.ok:
+                print(f"{doc.document}: {doc.reason}")
+        
     
     prompt_file = "mini.v1"
     results = []
