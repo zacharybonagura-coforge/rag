@@ -84,3 +84,51 @@ def retrieve_hybrid(
     keyword = search_keyword(query, latest_chunks(store.load_chunks()), k)
 
     return vector, keyword
+
+
+def fuse_rrf(
+    vector: list[ScoredChunk],
+    keyword: list[ScoredChunk],
+    k: int = 3,
+    rrf_k: int = 60,
+    vector_weight: float = 0.7,
+    keyword_weight: float = 0.3,
+) -> list[ScoredChunk]:
+    chunks: dict[str, ScoredChunk] = {}
+    scores: dict[str, float] = {}
+
+    for rank, hit in enumerate(vector, start=1):
+        chunk_id = hit.chunk.chunk_id
+        chunks[chunk_id] = hit
+        scores[chunk_id] = scores.get(chunk_id, 0.0) + vector_weight / (rrf_k + rank)
+
+    for rank, hit in enumerate(keyword, start=1):
+        chunk_id = hit.chunk.chunk_id
+        chunks[chunk_id] = hit
+        scores[chunk_id] = scores.get(chunk_id, 0.0) + keyword_weight / (rrf_k + rank)
+
+    fused = [
+        ScoredChunk(chunk=chunks[chunk_id].chunk, score=score)
+        for chunk_id, score in scores.items()
+    ]
+    fused.sort(key=lambda hit: hit.score, reverse=True)
+    return fused[:k]
+
+
+def retrieve_fused(
+    query: str,
+    embedder: EmbeddingAdapter,
+    store: VectorStoreAdapter,
+    k: int = 3,
+    pool: int = 10,
+    vector_weight=0.7,
+    keyword_weight=0.3
+) -> list[ScoredChunk]:
+    vector, keyword = retrieve_hybrid(query, embedder, store, k=pool)
+    return fuse_rrf(
+        vector,
+        keyword,
+        k=k,
+        vector_weight=vector_weight,
+        keyword_weight=keyword_weight,
+    )
