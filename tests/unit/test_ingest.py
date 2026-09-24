@@ -265,3 +265,91 @@ def test_ingest_reads_docx(tmp_path: Path) -> None:
         "handbook:v1.0:section-2",
     ]
     assert "City | $25" in chunks[2].text
+
+def _pdf_pages() -> list[dict[str, object]]:
+    return [
+        {
+            "metadata": {"page": 1},
+            "text": (
+                "# Girls' House Rules (Version 1.0)\n\n"
+                "## Kitchen\n"
+                "The girls eat first.\n\n"
+                "### Cookies\n"
+                "Leave three cookies for Agnes.\n"
+                "|Item|Count|\n"
+                "|---|---|\n"
+                "|Cookies|3|\n"
+            ),
+        },
+        {
+            "metadata": {"page_number": 2},
+            "text": (
+                "## Emergencies\n"
+                "Take the girls to the orange couch.\n"
+            ),
+        },
+    ]
+
+
+def test_load_pdf_headings_table_and_page(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = tmp_path / "handbook.pdf"
+    path.write_bytes(b"%PDF")
+    monkeypatch.setattr("blocks.pymupdf4llm.to_markdown", lambda *_a, **_k: _pdf_pages())
+
+    blocks = [(b.kind, b.text, b.page) for b in load(path) if b.text]
+
+    assert blocks == [
+        ("title", "Girls' House Rules (Version 1.0)", 1),
+        ("section", "Kitchen", 1),
+        ("body", "The girls eat first.", 1),
+        ("subsection", "Cookies", 1),
+        ("body", "Leave three cookies for Agnes.", 1),
+        ("body", "|Item|Count|", 1),
+        ("body", "|---|---|", 1),
+        ("body", "|Cookies|3|", 1),
+        ("section", "Emergencies", 2),
+        ("body", "Take the girls to the orange couch.", 2),
+    ]
+
+
+def test_chunk_pdf_subsections_and_table(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = tmp_path / "handbook.pdf"
+    path.write_bytes(b"%PDF")
+    monkeypatch.setattr("blocks.pymupdf4llm.to_markdown", lambda *_a, **_k: _pdf_pages())
+    records = chunk(path)
+
+    assert [r["chunk_id"] for r in records] == [
+        "handbook:v1.0:section-1:sub-0",
+        "handbook:v1.0:section-1:sub-1",
+        "handbook:v1.0:section-2",
+    ]
+    assert records[0]["page"] == 1
+    assert records[0]["text"] == "The girls eat first."
+    assert records[1]["subsection_title"] == "Cookies"
+    assert "|Cookies|3|" in str(records[1]["text"])
+    assert records[2]["page"] == 2
+    assert records[2]["section_title"] == "Emergencies"
+
+
+def test_load_pdf_requires_page_chunks_list(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = tmp_path / "handbook.pdf"
+    path.write_bytes(b"%PDF")
+    monkeypatch.setattr("blocks.pymupdf4llm.to_markdown", lambda *_a, **_k: "# not a list")
+
+    with pytest.raises(TypeError, match="page_chunks"):
+        load(path)
+
+
+def test_ingest_reads_pdf(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = tmp_path / "handbook.pdf"
+    path.write_bytes(b"%PDF")
+    monkeypatch.setattr("blocks.pymupdf4llm.to_markdown", lambda *_a, **_k: _pdf_pages())
+    chunks = ingest(tmp_path, FakeEmbedder())
+
+    assert [c.chunk_id for c in chunks] == [
+        "handbook:v1.0:section-1:sub-0",
+        "handbook:v1.0:section-1:sub-1",
+        "handbook:v1.0:section-2",
+    ]
+    assert chunks[1].text.count("Cookies") >= 1
+    assert chunks[2].page == 2
