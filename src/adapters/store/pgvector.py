@@ -3,7 +3,7 @@
 import os
 
 import psycopg
-from pgvector.psycopg import register_vector  # type: ignore[import-untyped]
+from pgvector.psycopg import register_vector
 
 from schemas.chunk import Chunk, ScoredChunk
 
@@ -91,16 +91,39 @@ class PgVectorStoreAdapter:
         query_embedding: list[float],
         k: int = 3,
     ) -> list[ScoredChunk]:
-        """Return the ``k`` nearest chunks by cosine distance."""
+        """Return the ``k`` nearest chunks by cosine distance.
+        Restricts hits to the latest version per document family. Family is
+        the file stem with a trailing ``-vN`` stripped, so
+        ``gru-minion-handbook-v1`` and ``-v2`` compete. Version is compared
+        as ``int[]`` (``10.0`` > ``9.0``); an empty version is ``{0}``.
+        Other families keep their own latest (Nefario/girls ``1.0`` stay).
+        """
         with self._connect() as conn, conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT chunk_id, document, version, section,
-                    section_title, text, subsection,
-                    subsection_title, part, page, embedding,
-                    (embedding <=> %s::vector) AS distance
-                FROM chunks
-                ORDER BY embedding <=> %s::vector ASC
+                WITH latest AS (
+                    SELECT
+                        regexp_replace(document, '-v[0-9]+$', '') AS family,
+                        max(
+                            COALESCE(
+                                string_to_array(NULLIF(version, ''), '.')::int[],
+                                ARRAY[0]
+                            )
+                        ) AS ver
+                    FROM chunks
+                    GROUP BY 1
+                )
+                SELECT
+                    c.*,
+                    (c.embedding <=> %s::vector) AS distance
+                FROM chunks c
+                JOIN latest l
+                ON l.family = regexp_replace(c.document, '-v[0-9]+$', '')
+                AND COALESCE(
+                        string_to_array(NULLIF(c.version, ''), '.')::int[],
+                        ARRAY[0]
+                    ) = l.ver
+                ORDER BY c.embedding <=> %s::vector ASC
                 LIMIT %s
                 """,
                 (query_embedding, query_embedding, k),
