@@ -1,6 +1,15 @@
 from collections.abc import Sequence
 
-from retrieve import latest_chunks, retrieve_hybrid, search_keyword, tokenize
+import pytest
+
+from retrieve import (
+    fuse_rrf,
+    latest_chunks,
+    retrieve_fused,
+    retrieve_hybrid,
+    search_keyword,
+    tokenize,
+)
 from schemas.chunk import Chunk, ScoredChunk
 
 RENTALS = Chunk(
@@ -147,3 +156,67 @@ def test_retrieve_hybrid_returns_two_lists() -> None:
 
     assert [h.chunk.section_title for h in vector] == ["Returns"]
     assert [h.chunk.section_title for h in keyword] == ["Hours"]
+
+
+def _hit(chunk: Chunk) -> ScoredChunk:
+    return ScoredChunk(chunk=chunk, score=0.0)
+
+
+def test_fuse_rrf_keeps_shared_top_hit_first() -> None:
+    vector = [_hit(RENTALS), _hit(RETURNS)]
+    keyword = [_hit(RENTALS), _hit(HOURS)]
+
+    fused = fuse_rrf(vector, keyword)
+
+    assert fused[0].chunk.section_title == "Rentals"
+    assert fused[0].score == pytest.approx(0.7 / 61 + 0.3 / 61)
+
+
+def test_fuse_rrf_weights_change_runner_up() -> None:
+    vector = [_hit(RENTALS), _hit(RETURNS)]
+    keyword = [_hit(RENTALS), _hit(HOURS)]
+
+    favor_vector = fuse_rrf(vector, keyword, vector_weight=0.7, keyword_weight=0.3)
+    favor_keyword = fuse_rrf(vector, keyword, vector_weight=0.3, keyword_weight=0.7)
+
+    assert [h.chunk.section_title for h in favor_vector] == [
+        "Rentals",
+        "Returns",
+        "Hours",
+    ]
+    assert [h.chunk.section_title for h in favor_keyword] == [
+        "Rentals",
+        "Hours",
+        "Returns",
+    ]
+
+
+def test_fuse_rrf_empty_side_keeps_other_ranking() -> None:
+    vector = [_hit(RETURNS), _hit(RENTALS), _hit(HOURS)]
+
+    fused = fuse_rrf(vector, [], k=2)
+
+    assert [h.chunk.section_title for h in fused] == ["Returns", "Rentals"]
+
+
+def test_fuse_rrf_respects_k() -> None:
+    vector = [_hit(RETURNS), _hit(RENTALS), _hit(HOURS)]
+    keyword = [_hit(HOURS)]
+
+    assert len(fuse_rrf(vector, keyword, k=1)) == 1
+
+
+def test_retrieve_fused_uses_pool_then_rrf() -> None:
+    vector_hits = [_hit(RETURNS), _hit(RENTALS), _hit(HOURS)]
+    store = FakeStore(vector_hits, CORPUS)
+
+    fused = retrieve_fused(
+        "Are you open on Sunday?",
+        FakeEmbedder(),
+        store,
+        k=2,
+        pool=10,
+    )
+
+    # Hours is vector #3 + BM25 #1, so RRF puts it first.
+    assert [h.chunk.section_title for h in fused] == ["Hours", "Returns"]
