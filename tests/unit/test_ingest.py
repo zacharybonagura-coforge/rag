@@ -65,11 +65,51 @@ def test_chunk_missing_file_raises(tmp_path: Path) -> None:
         chunk(tmp_path / "missing.md")
 
 
-def test_chunk_no_sections_returns_empty(tmp_path: Path) -> None:
+def test_chunk_no_sections_uses_title_as_section(tmp_path: Path) -> None:
     path = tmp_path / "empty.md"
     path.write_text("# Title only (Version 1)\n\nPreamble with no sections.\n")
+    records = chunk(path)
 
-    assert chunk(path) == []
+    assert len(records) == 1
+    assert records[0]["section_title"] == "Title only (Version 1)"
+    assert records[0]["chunk_id"] == "empty:v1:section-1"
+    assert records[0]["subsection"] == ""
+    assert "Preamble with no sections." in str(records[0]["text"])
+
+
+def test_chunk_plain_body_uses_filename_as_section(tmp_path: Path) -> None:
+    path = tmp_path / "memo.md"
+    path.write_text("Just a paragraph. No headings at all.\n")
+    records = chunk(path)
+
+    assert len(records) == 1
+    assert records[0]["section_title"] == "memo"
+    assert records[0]["version"] == ""
+    assert records[0]["chunk_id"] == "memo:v:section-1"
+    assert "Just a paragraph." in str(records[0]["text"])
+
+
+def test_chunk_plain_body_splits_long_text(tmp_path: Path) -> None:
+    path = tmp_path / "notes.md"
+    path.write_text(("word " * 80).strip() + "\n")
+    records = chunk(path, max_chars=80, overlap=10)
+
+    assert len(records) > 1
+    assert [r["chunk_id"] for r in records] == [
+        f"notes:v:section-1:part-{i}" for i in range(len(records))
+    ]
+    assert all(len(str(r["text"])) <= 80 for r in records)
+
+
+def test_chunk_title_without_version_ok_if_no_sections(tmp_path: Path) -> None:
+    path = tmp_path / "loose.md"
+    path.write_text("# Harbor Bike Shop Handbook\n\nOpen daily.\n")
+    records = chunk(path)
+
+    assert len(records) == 1
+    assert records[0]["chunk_id"] == "loose:v:section-1"
+    assert records[0]["section_title"] == "Harbor Bike Shop Handbook"
+    assert "Open daily." in str(records[0]["text"])
 
 
 def test_chunk_skips_empty_section(tmp_path: Path) -> None:
@@ -187,8 +227,8 @@ def test_chunk_markdown_splits_long_section(tmp_path: Path) -> None:
 def test_chunk_markdown_title_without_version_raises(tmp_path: Path) -> None:
     path = tmp_path / "bad.md"
     path.write_text("# Harbor Bike Shop Handbook\n\n## Hours\nOpen daily.\n")
-
-    with pytest.raises(ValueError, match="title has no version"):
+    
+    with pytest.raises(ValueError, match="has sections but no version"):
         chunk(path)
 
 

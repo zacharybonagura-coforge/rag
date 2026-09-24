@@ -113,10 +113,19 @@ def chunk(
                 }
             )
 
+    title_text = ""
+    preamble: list[str] = []
+    saw_section = False
+
     for block in load(path):
         if block.kind == "title":
-            version = _version_from_title(block.text)
+            title_text = block.text
+            try:
+                version = _version_from_title(block.text)
+            except ValueError:
+                version = None
         elif block.kind == "section":
+            saw_section = True
             if in_section:
                 emit(in_subsection)
             section_title, section_no = block.text, None
@@ -127,21 +136,30 @@ def chunk(
             in_subsection = True
             sub_no += 1
             sub_title = block.text
-        elif block.kind == "body" and in_section:
+        elif block.kind == "body":
             if page is None and block.page is not None:
                 page = block.page
-            body.append(block.text)
+            if in_section:
+                body.append(block.text)
+            else:
+                preamble.append(block.text)
 
     if in_section:
         emit(in_subsection)
+    elif any(line.strip() for line in preamble):
+        section_title = title_text or slug
+        section_no = None
+        body = preamble
+        emit(False)
 
-    if records and version is None:
+    if records and version is None and saw_section:
         raise ValueError(f"{path} has sections but no version in the H1")
 
     for record in records:
         record["document"] = slug
-        record["version"] = version or ""
-        base = f"{slug}:v{version}:section-{record['section']}"
+        ver = version or ""
+        record["version"] = ver
+        base = f"{slug}:v{ver}:section-{record['section']}"
         if record["subsection"]:
             base += f":sub-{record['subsection']}"
         if record.pop("split"):
