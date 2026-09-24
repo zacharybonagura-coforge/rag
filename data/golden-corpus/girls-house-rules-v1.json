@@ -1,0 +1,55 @@
+{
+    "document": "girls-house-rules-v1",
+    "corpus_file": "data/corpus/girls-house-rules-v1.pdf",
+    "retrieve_k": 5,
+    "questions": [
+      {
+        "id": "girls-unicorn-decides",
+        "type": "table",
+        "query": "Who decides unicorn rules, and what is the minion job?",
+        "gold_chunk_ids": [
+          "girls-house-rules-v1:v1.0:section-1:sub-0:part-0",
+          "girls-house-rules-v1:v1.0:section-1:sub-0:part-1"
+        ],
+        "gold_section": "Who Is In Charge",
+        "gold_subsection": "",
+        "must_include": ["Agnes"]
+      },
+      {
+        "id": "girls-bedtime",
+        "type": "fact",
+        "query": "When must bunk room lights stay dim, and when do freeze rays stop?",
+        "gold_chunk_ids": ["girls-house-rules-v1:v1.0:section-1:sub-1"],
+        "gold_section": "Who Is In Charge",
+        "gold_subsection": "Bedtime",
+        "must_include": ["8pm", "7pm"]
+      },
+      {
+        "id": "girls-agnes-cookies",
+        "type": "table",
+        "query": "How many cookies does Agnes get?",
+        "gold_chunk_ids": ["girls-house-rules-v1:v1.0:section-2:sub-1"],
+        "gold_section": "Kitchen",
+        "gold_subsection": "Cookies",
+        "must_include": ["3"]
+      },
+      {
+        "id": "girls-saturday-chore",
+        "type": "table",
+        "query": "What is the Saturday girl job and the minion job?",
+        "gold_chunk_ids": ["girls-house-rules-v1:v1.0:section-2:sub-2"],
+        "gold_section": "Kitchen",
+        "gold_subsection": "Chores",
+        "must_include": ["Park", "door"]
+      },
+      {
+        "id": "girls-secrets-moon",
+        "type": "fact",
+        "query": "What must a minion not say if a girl asks what they are building?",
+        "gold_chunk_ids": ["girls-house-rules-v1:v1.0:section-3:sub-1"],
+        "gold_section": "Lab and Living Room",
+        "gold_subsection": "Secrets",
+        "must_include": ["Moon"]
+      }
+    ]
+  }
