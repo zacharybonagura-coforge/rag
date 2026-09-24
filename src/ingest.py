@@ -158,9 +158,9 @@ def ingest(
     overlap: int = 100,
 ) -> list[Chunk]:
     """Chunk every ``*.md`` under ``root`` and embed each chunk body."""
-    paths = sorted(root.glob("*.md"))
+    paths = sorted(root.glob("*.md")) + sorted(root.glob("*.docx"))
     if not paths:
-        raise FileNotFoundError(f"no markdown files in {root}")
+        raise FileNotFoundError(f"no markdown or docx files in {root}")
     records = [
         record
         for path in paths
