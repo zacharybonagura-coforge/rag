@@ -2,7 +2,9 @@ from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
+from docx import Document
 
+from blocks import load
 from ingest import _soft_end, _windows, chunk, ingest
 from schemas.chunk import Chunk
 
@@ -188,3 +190,78 @@ def test_chunk_markdown_title_without_version_raises(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="title has no version"):
         chunk(path)
+
+
+def _write_docx(path: Path) -> None:
+    doc = Document()
+    doc.add_paragraph("Harbor Bike Shop Handbook (Version 1.0)", style="Heading 1")
+    doc.add_paragraph("Hours", style="Heading 2")
+    doc.add_paragraph("Walk-ins are welcome.")
+    doc.add_paragraph("Weekday", style="Heading 3")
+    doc.add_paragraph("Open from 10am to 6pm.")
+    doc.add_paragraph("Prices", style="Heading 2")
+    doc.add_paragraph("See the table.")
+    table = doc.add_table(rows=2, cols=2)
+    table.cell(0, 0).text = "City"
+    table.cell(0, 1).text = "$25"
+    table.cell(1, 0).text = "Electric"
+    table.cell(1, 1).text = "$45"
+    doc.add_paragraph("A photo ID is required.")
+    doc.save(str(path))
+
+
+def test_load_docx_headings_and_table(tmp_path: Path) -> None:
+    path = tmp_path / "handbook.docx"
+    _write_docx(path)
+
+    blocks = load(path)
+
+    assert [(b.kind, b.text) for b in blocks] == [
+        ("title", "Harbor Bike Shop Handbook (Version 1.0)"),
+        ("section", "Hours"),
+        ("body", "Walk-ins are welcome."),
+        ("subsection", "Weekday"),
+        ("body", "Open from 10am to 6pm."),
+        ("section", "Prices"),
+        ("body", "See the table."),
+        ("body", "City | $25"),
+        ("body", "Electric | $45"),
+        ("body", "A photo ID is required."),
+    ]
+
+
+def test_chunk_docx_subsections_and_table(tmp_path: Path) -> None:
+    path = tmp_path / "handbook.docx"
+    _write_docx(path)
+    records = chunk(path)
+
+    assert [r["chunk_id"] for r in records] == [
+        "handbook:v1.0:section-1:sub-0",
+        "handbook:v1.0:section-1:sub-1",
+        "handbook:v1.0:section-2",
+    ]
+    assert records[0]["text"] == "Walk-ins are welcome."
+    assert records[1]["subsection_title"] == "Weekday"
+    assert str(records[2]["text"]) == (
+        "See the table.\nCity | $25\nElectric | $45\nA photo ID is required."
+    )
+
+
+def test_load_rejects_unknown_suffix(tmp_path: Path) -> None:
+    path = tmp_path / "notes.txt"
+    path.write_text("hello")
+
+    with pytest.raises(ValueError, match="unsupported file type"):
+        load(path)
+
+
+def test_ingest_reads_docx(tmp_path: Path) -> None:
+    _write_docx(tmp_path / "handbook.docx")
+    chunks = ingest(tmp_path, FakeEmbedder())
+
+    assert [c.chunk_id for c in chunks] == [
+        "handbook:v1.0:section-1:sub-0",
+        "handbook:v1.0:section-1:sub-1",
+        "handbook:v1.0:section-2",
+    ]
+    assert "City | $25" in chunks[2].text
