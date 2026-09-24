@@ -37,15 +37,15 @@ def test_chunk_handbook_one_section_each() -> None:
     assert records[1]["chunk_id"] == "harbor-bike-shop-handbook:v1.0:section-2"
     assert records[0]["document"] == "harbor-bike-shop-handbook"
     assert records[0]["version"] == "1.0"
-    assert "Tuesday" in records[0]["text"]
+    assert "Tuesday" in str(records[0]["text"])
     assert all(r["section"] == str(i) for i, r in enumerate(records, start=1))
 
 
 def test_chunk_skips_title() -> None:
     records = chunk(CORPUS_FILE)
 
-    assert not any("Handbook" in r["section_title"] for r in records)
-    assert not any("Handbook" in r["text"] for r in records)
+    assert not any("Handbook" in str(r["section_title"]) for r in records)
+    assert not any("Handbook" in str(r["text"]) for r in records)
 
 
 def test_ingest_builds_chunks_with_embeddings() -> None:
