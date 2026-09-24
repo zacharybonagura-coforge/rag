@@ -5,21 +5,18 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from embeddings.sentence_transformer import SentenceTransformerEmbeddingAdapter
+from factories import build_embedder, build_generator, build_store
+from config import Settings
 from generate import generate
-from generation.ollama import OllamaAdapter
 from ingest import ingest
 from models.response import RagResponse, build_response
 from retrieve import retrieve
-from store.pgvector import PgVectorStoreAdapter
 
 ROOT = Path(__file__).resolve().parents[1]
-CORPUS = ROOT / "data/corpus-tiny/harbor-bike-shop-handbook.md"
-RUNS_DIR = ROOT / "runs"
-K = 3
+CORPUS = ROOT / "data/corpus-tiny/"
 
 
-def write_run(results: list[RagResponse], runs_dir: Path = RUNS_DIR) -> Path:
+def write_run(results: list[RagResponse], runs_dir: Path) -> Path:
     """Write every result to one timestamped JSON file under ``runs_dir``."""
     runs_dir.mkdir(exist_ok=True)
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
@@ -42,9 +39,10 @@ QUERIES = [
 
 
 def main() -> None:
-    embedder = SentenceTransformerEmbeddingAdapter()
-    store = PgVectorStoreAdapter()
-    model = OllamaAdapter(host="http://host.docker.internal:11434")
+    settings = Settings.from_env()
+    embedder = build_embedder(settings)
+    store = build_store(settings)
+    model = build_generator(settings)
 
     if not store.load_chunks():
         chunks = ingest(CORPUS, embedder)
@@ -53,13 +51,13 @@ def main() -> None:
     prompt_file = "mini.v1"
     results = []
     for query in QUERIES:
-        hits = retrieve(query, embedder, store, k=K)
+        hits = retrieve(query, embedder, store, k=settings.retrieve_k)
         answer = generate(query, hits, model, prompt_file)
         response = build_response(query, answer, hits)
         results.append(response)
         print(f"{query}\n{answer}\n")
 
-    out = write_run(results)
+    out = write_run(results, settings.runs_dir)
     print(f"Wrote {out}", file=sys.stderr)
 
 
