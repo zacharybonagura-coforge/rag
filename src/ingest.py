@@ -63,9 +63,12 @@ def chunk(path: Path) -> list[dict[str, str]]:
     return sections
 
 
-def ingest(path: Path, embedder: EmbeddingAdapter) -> list[Chunk]:
-    """Chunk ``path`` and embed each section body."""
-    records = chunk(path)
+def ingest(root: Path, embedder: EmbeddingAdapter) -> list[Chunk]:
+    """Chunk every ``*.md`` under ``root`` and embed each section body."""
+    paths = sorted(root.glob("*.md"))
+    if not paths:
+        raise FileNotFoundError(f"no markdown files in {root}")
+    records = [record for path in paths for record in chunk(path)]
     vectors = embedder.embed_documents([r["text"] for r in records])
     return [
         Chunk(**record, embedding=vector)

@@ -6,8 +6,8 @@ import pytest
 from ingest import chunk, ingest
 from models.chunk import Chunk
 
-CORPUS = Path("data/corpus-tiny/harbor-bike-shop-handbook.md")
-
+CORPUS_FILE = Path("data/corpus-tiny/harbor-bike-shop-handbook.md")
+CORPUS_DIR = Path("data/corpus-tiny")
 
 class FakeEmbedder:
     provider = "fake"
@@ -27,7 +27,7 @@ class FakeEmbedder:
 
 
 def test_chunk_handbook_one_section_each() -> None:
-    records = chunk(CORPUS)
+    records = chunk(CORPUS_FILE)
 
     assert [r["section_title"] for r in records] == [
         "Hours",
@@ -42,14 +42,14 @@ def test_chunk_handbook_one_section_each() -> None:
 
 
 def test_chunk_skips_title() -> None:
-    records = chunk(CORPUS)
+    records = chunk(CORPUS_FILE)
 
     assert not any("Handbook" in r["section_title"] for r in records)
     assert not any("Handbook" in r["text"] for r in records)
 
 
 def test_ingest_builds_chunks_with_embeddings() -> None:
-    chunks = ingest(CORPUS, FakeEmbedder())
+    chunks = ingest(CORPUS_DIR, FakeEmbedder())
 
     assert len(chunks) == 2
     assert all(isinstance(c, Chunk) for c in chunks)
@@ -86,4 +86,4 @@ def test_ingest_raises_when_embedder_count_mismatches() -> None:
     embedder = FakeEmbedder(vectors=[[0.0] * 768])
 
     with pytest.raises(ValueError, match="shorter than argument 1"):
-        ingest(CORPUS, embedder)
+        ingest(CORPUS_DIR, embedder)
