@@ -9,6 +9,7 @@ dependencies = [
     "pgvector==0.3.6",
     "psycopg[binary]==3.2.3",
     "pydantic==2.9.2",
+    "pymupdf4llm>=1.28.2",
     "python-docx>=1.2.0",
     "sentence-transformers>=6.1.0",
     "torch>=2.2",
@@ -50,3 +51,7 @@ pythonpath = ["src"]
 [tool.mypy]
 mypy_path = "src"
 explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = ["pymupdf4llm", "pgvector.psycopg"]
+ignore_missing_imports = true

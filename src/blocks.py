@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+import pymupdf4llm
 from docx import Document
 from docx.document import Document as DocxDocument
 from docx.oxml.ns import qn
@@ -23,11 +24,13 @@ _MD_HEADINGS: tuple[tuple[str, BlockKind], ...] = (
     ("# ", "title"),
 )
 
-def _load_markdown(path: Path) -> list[Block]:
-    """Turn markdown lines into blocks. ``page`` is always ``None``."""
+
+def _blocks_from_markdown_lines(
+    lines: list[str], *, page: int | None = None
+) -> list[Block]:
     blocks: list[Block] = []
     in_fence = False
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in lines:
         if line.startswith("```"):
             in_fence = not in_fence
         kind: BlockKind = "body"
@@ -35,11 +38,17 @@ def _load_markdown(path: Path) -> list[Block]:
         if not in_fence:
             for prefix, heading_kind in _MD_HEADINGS:
                 if line.startswith(prefix):
-                    kind = heading_kind
-                    text = line.removeprefix(prefix).strip()
+                    kind, text = heading_kind, line.removeprefix(prefix).strip()
                     break
-        blocks.append(Block(text=text, kind=kind))
+        blocks.append(Block(text=text, kind=kind, page=page))
     return blocks
+
+
+def _load_markdown(path: Path) -> list[Block]:
+    """Turn markdown lines into blocks. ``page`` is always ``None``."""
+    return _blocks_from_markdown_lines(
+        path.read_text(encoding="utf-8").splitlines()
+    )
 
 
 def _iter_docx_items(document: DocxDocument) -> Iterator[Paragraph | Table]:
@@ -83,10 +92,32 @@ def _load_docx(path: Path) -> list[Block]:
     return blocks
 
 
+def _page_number(meta: dict[str, object]) -> int | None:
+    raw = meta.get("page_number", meta.get("page"))
+    if isinstance(raw, int):
+        return raw
+    return None
+def _load_pdf(path: Path) -> list[Block]:
+    """Turn a PDF into markdown with pymupdf4llm, then into blocks."""
+    pages = pymupdf4llm.to_markdown(str(path), page_chunks=True, ignore_images=True)
+    if not isinstance(pages, list):
+        raise TypeError("expected page_chunks list from pymupdf4llm")
+    blocks: list[Block] = []
+    for page in pages:
+        meta = page.get("metadata") if isinstance(page.get("metadata"), dict) else {}
+        text = str(page.get("text") or "")
+        blocks.extend(
+            _blocks_from_markdown_lines(text.splitlines(), page=_page_number(meta))
+        )
+    return blocks
+
+
 _LOADERS = {
     ".md": _load_markdown,
     ".docx": _load_docx,
+    ".pdf": _load_pdf,
 }
+
 
 def load(path: Path) -> list[Block]:
     """Read ``path`` into blocks. Supports ``.md`` and ``.docx``."""
