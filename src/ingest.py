@@ -22,10 +22,10 @@ def _version_from_title(title: str) -> str:
 
 
 def _soft_end(window: str) -> int:
-    """Cut near the end of ``window`` on a paragraph, sentence, or space."""
+    """Cut near the end of ``window`` on a line, sentence, or space."""
     region_start = len(window) * 4 // 5
     region = window[region_start:]
-    for sep in ("\n\n", ". ", " "):
+    for sep in ("\n\n", "\n", ". ", " "):
         idx = region.rfind(sep)
         if idx != -1:
             return region_start + idx + len(sep)
@@ -51,6 +51,12 @@ def _windows(text: str, max_chars: int, overlap: int) -> list[str]:
         next_start = end - overlap
         if next_start <= start:
             next_start = start + 1
+        else:
+            snapped = text.rfind("\n", start, next_start + 1)
+            if snapped == -1:
+                snapped = text.rfind(" ", start, next_start + 1)
+            if snapped != -1:
+                next_start = snapped + 1
         start = next_start
     return parts
 
