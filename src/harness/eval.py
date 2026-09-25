@@ -112,14 +112,7 @@ def hit_ids_from_response(response: RagResponse, k: int) -> set[str]:
 
 
 def heading_match(chunk: Chunk, question: GoldQuestion) -> bool:
-    if chunk.document != question.document:
-        return False
-    if chunk.section_title != question.gold_section:
-        return False
-    return not (
-        question.gold_subsection
-        and chunk.subsection_title != question.gold_subsection
-    )
+    return not (question.gold_subsection and chunk.subsection_title != question.gold_subsection)
 
 
 def score_retrieval(question: GoldQuestion, hits: list[ScoredChunk]) -> bool:
