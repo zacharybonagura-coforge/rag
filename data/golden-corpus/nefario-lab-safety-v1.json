@@ -22,7 +22,7 @@
         "gold_chunk_ids": ["nefario-lab-safety-v1:v1.0:section-2:sub-1"],
         "gold_section": "Workstations",
         "gold_subsection": "Freeze Ray Bench",
-        "must_include": ["rack A"]
+        "must_include": ["marked rack"]
       },
       {
         "id": "nefario-shrink-keys",
