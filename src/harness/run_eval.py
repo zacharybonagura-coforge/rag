@@ -68,7 +68,7 @@ def main() -> None:
         print(f"{doc.document}: {status}", file=sys.stderr)
     print(f"stored {len(chunks)} chunks from {corpus}", file=sys.stderr)
 
-    prompt_file = "policy.v2"
+    prompt_file = settings.prompt_name
     pool = settings.retrieve_pool
     scores = []
     responses = []

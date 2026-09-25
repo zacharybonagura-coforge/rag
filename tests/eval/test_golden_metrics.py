@@ -54,7 +54,7 @@ def scored(stack):
     scores = []
     for question in questions:
         hits = _hits(question.query, embedder, store, settings, k=question.retrieve_k)
-        answer = generate(question.query, hits, model, "policy.v2")
+        answer = generate(question.query, hits, model, settings.prompt_name)
         scores.append(score_question(question, hits=hits, answer=answer))
     return EvalReport(scores=scores, retrieve_k=questions[0].retrieve_k)
 
