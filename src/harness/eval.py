@@ -7,7 +7,7 @@ from pathlib import Path
 from schemas.chunk import Chunk, ScoredChunk
 from schemas.response import RagResponse, RetrievedChunkRef
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 GOLDEN_DIR = ROOT / "data/golden-corpus"
 LATEST_GOLDEN = (
     "gru-minion-handbook-v2.json",

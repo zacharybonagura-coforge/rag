@@ -1,7 +1,7 @@
+import re
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
-import re
 from typing import Literal
 
 import pymupdf4llm

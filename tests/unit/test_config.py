@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from config import ROOT, Settings
-from enums import EmbeddingProvider, ModelProvider, StoreProvider
+from settings.config import ROOT, Settings
+from settings.enums import EmbeddingProvider, ModelProvider, StoreProvider
 
 SETTINGS_KEYS = (
     "EMBEDDING_PROVIDER",

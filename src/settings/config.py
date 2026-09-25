@@ -4,9 +4,9 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from enums import EmbeddingProvider, ModelProvider, StoreProvider
+from settings.enums import EmbeddingProvider, ModelProvider, StoreProvider
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def _env_bool(name: str, default: bool) -> bool:

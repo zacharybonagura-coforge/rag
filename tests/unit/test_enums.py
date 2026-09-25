@@ -1,6 +1,6 @@
 import pytest
 
-from enums import EmbeddingProvider, ModelProvider, StoreProvider
+from settings.enums import EmbeddingProvider, ModelProvider, StoreProvider
 
 
 def test_provider_values_match_env_strings() -> None:

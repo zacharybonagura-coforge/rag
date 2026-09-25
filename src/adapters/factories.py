@@ -6,8 +6,8 @@ from adapters.generation.base import ModelAdapter
 from adapters.generation.ollama import OllamaAdapter
 from adapters.store.base import VectorStoreAdapter
 from adapters.store.pgvector import PgVectorStoreAdapter
-from config import Settings
-from enums import EmbeddingProvider, ModelProvider, StoreProvider
+from settings.config import Settings
+from settings.enums import EmbeddingProvider, ModelProvider, StoreProvider
 
 
 def build_embedder(settings: Settings) -> EmbeddingAdapter:

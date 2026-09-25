@@ -6,8 +6,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from adapters.factories import build_embedder, build_generator, build_store
-from config import Settings
-from eval import (
+from settings.config import Settings
+from harness.eval import (
     EvalReport,
     load_questions,
     score_question,
@@ -17,7 +17,7 @@ from ingest import ingest
 from retrieve import retrieve, retrieve_fused
 from schemas.response import RagResponse, build_response
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def write_eval(
