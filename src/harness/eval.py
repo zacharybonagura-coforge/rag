@@ -1,6 +1,7 @@
 """Score retrieval recall and answer key phrases against the golden set."""
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -128,8 +129,15 @@ def score_retrieval(question: GoldQuestion, hits: list[ScoredChunk]) -> bool:
     return any(heading_match(hit.chunk, question) for hit in hits[: question.retrieve_k])
 
 
+_CITE_TAIL = re.compile(r"\s*\(cited from\b.*$", re.IGNORECASE | re.DOTALL)
+
+
+def _answer_body(answer: str) -> str:
+    return _CITE_TAIL.sub("", answer).strip()
+
+
 def _phrase_hit(answer: str, item: Phrase) -> bool:
-    text = answer.lower()
+    text = _answer_body(answer).lower()
     if isinstance(item, str):
         return item.lower() in text
     return any(phrase.lower() in text for phrase in item)
