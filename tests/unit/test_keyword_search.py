@@ -142,6 +142,9 @@ class FakeStore:
     def search(self, query_embedding: list[float], k: int = 3) -> list[ScoredChunk]:
         return self.results[:k]
 
+    def search_all(self, query_embedding: list[float], k: int = 3) -> list[ScoredChunk]:
+        return self.results[:k]
+
 
 def test_retrieve_hybrid_returns_two_lists() -> None:
     vector_hits = [ScoredChunk(chunk=RETURNS, score=0.1)]

@@ -68,6 +68,11 @@ class FakeStore:
         self.last_embedding = query_embedding
         self.last_k = k
         return self.results[:k]
+    
+    def search_all(self, query_embedding: list[float], k: int = 3) -> list[ScoredChunk]:
+        self.last_embedding = query_embedding
+        self.last_k = k
+        return self.results[:k]
 
 
 def test_retrieve_embeds_query_and_passes_k() -> None:

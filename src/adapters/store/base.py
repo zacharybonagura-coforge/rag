@@ -29,3 +29,14 @@ class VectorStoreAdapter(Protocol):
     ) -> list[ScoredChunk]:
         """Return the ``k`` chunks nearest to ``query_embedding``."""
         ...
+
+    def search_all(
+        self,
+        query_embedding: list[float],
+        k: int = 3,
+    ) -> list[ScoredChunk]:
+        """Return the ``k`` chunks nearest to ``query_embedding``. 
+        Includes superseded versions.
+        """
+        ...
+    
