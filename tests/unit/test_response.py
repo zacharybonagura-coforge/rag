@@ -1,7 +1,6 @@
 from schemas.chunk import Chunk, ScoredChunk
 from schemas.response import REFUSE, build_response
 
-
 HOURS = Chunk(
     chunk_id="harbor-bike-shop-handbook:v1.0:section-1",
     document="harbor-bike-shop-handbook",

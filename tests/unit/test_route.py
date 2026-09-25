@@ -2,7 +2,7 @@ from collections.abc import Sequence
 
 import pytest
 
-from schemas.chunk import Chunk, ScoredChunk
+import retrieve as retrieve_mod
 from retrieve import (
     cross_encode_rerank,
     retrieve,
@@ -10,7 +10,7 @@ from retrieve import (
     retrieve_reranked,
     route_query,
 )
-import retrieve as retrieve_mod
+from schemas.chunk import Chunk, ScoredChunk
 
 V1 = Chunk(
     chunk_id="gru-minion-handbook-v1:v1.0:section-2",

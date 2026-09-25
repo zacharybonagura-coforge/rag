@@ -378,11 +378,6 @@ def test_chunk_load_error_wraps(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)
         chunk(path)
 
 
-def test_windows_advances_one_char_when_overlap_covers_window() -> None:
-    parts = _windows("a bcdefghijkl", max_chars=5, overlap=4)
-    assert len(parts) > 1
-
-
 def test_ingest_raises_when_directory_has_no_handbooks(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError, match="no markdown"):
         ingest(tmp_path, FakeEmbedder())

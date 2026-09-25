@@ -4,8 +4,10 @@ from harness.eval import (
     EvalReport,
     GoldQuestion,
     QuestionScore,
+    _luhn_ok,
     chunk_id_candidates,
     gate_pii,
+    heading_match,
     hit_ids_from_response,
     load_questions,
     pii_spans,
@@ -13,11 +15,9 @@ from harness.eval import (
     score_question,
     score_retrieval,
     score_run,
-    heading_match,
-    _luhn_ok
 )
-from schemas.response import REFUSE, RagResponse, RetrievedChunkRef
 from schemas.chunk import Chunk, ScoredChunk
+from schemas.response import REFUSE, RagResponse, RetrievedChunkRef
 
 
 def _q(
