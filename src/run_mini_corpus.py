@@ -55,7 +55,7 @@ def main() -> None:
     prompt_file = "mini.v1"
     results = []
     for query in QUERIES:
-        hits = retrieve(query, embedder, store, k=settings.retrieve_k)
+        hits = retrieve(query, embedder, store, k=2)
         answer = generate(query, hits, model, prompt_file)
         response = build_response(query, answer, hits)
         results.append(response)
