@@ -13,7 +13,7 @@ from harness.eval import (
     score_question,
 )
 from ingest import ingest
-from retrieve import retrieve, retrieve_fused
+from retrieve import retrieve, retrieve_fused, cross_encode_rerank, retrieve_reranked
 from schemas.response import RagResponse, build_response
 from settings.config import Settings
 
@@ -69,17 +69,30 @@ def main() -> None:
     print(f"stored {len(chunks)} chunks from {corpus}", file=sys.stderr)
 
     prompt_file = "policy.v2"
-    pool = 10
+    pool = settings.retrieve_pool
     scores = []
     responses = []
     for question in questions:
-        if settings.hybrid_retrieve:
+        if settings.hybrid_retrieve and settings.cross_encode:
+            hits = retrieve_reranked(
+                question.query, embedder, store,
+                k=question.retrieve_k, pool=pool,
+            )
+        elif settings.hybrid_retrieve:
             hits = retrieve_fused(
                 question.query, embedder, store,
                 k=question.retrieve_k, pool=pool,
             )
+        elif settings.cross_encode:
+            hits = cross_encode_rerank(
+                question.query,
+                retrieve(question.query, embedder, store, k=pool),
+                question.retrieve_k,
+            )
         else:
-            hits = retrieve(question.query, embedder, store, k=question.retrieve_k)
+            hits = retrieve(
+                question.query, embedder, store, k=question.retrieve_k,
+            )
 
         answer = generate(question.query, hits, model, prompt_file)
         score = score_question(question, hits=hits, answer=answer)

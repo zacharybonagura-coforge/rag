@@ -7,6 +7,7 @@ from rank_bm25 import BM25Okapi
 from adapters.embeddings.base import EmbeddingAdapter
 from adapters.store.base import VectorStoreAdapter
 from schemas.chunk import Chunk, ScoredChunk
+from sentence_transformers import CrossEncoder
 
 TOKEN_RE = re.compile(r"[a-z0-9]+(?:'[a-z]+)?")
 STOPWORDS = frozenset({
@@ -91,8 +92,8 @@ def fuse_rrf(
     keyword: list[ScoredChunk],
     k: int = 3,
     rrf_k: int = 60,
-    vector_weight: float = 0.7,
-    keyword_weight: float = 0.3,
+    vector_weight: float = 0.65,
+    keyword_weight: float = 0.35,
 ) -> list[ScoredChunk]:
     chunks: dict[str, ScoredChunk] = {}
     scores: dict[str, float] = {}
@@ -121,8 +122,8 @@ def retrieve_fused(
     store: VectorStoreAdapter,
     k: int = 3,
     pool: int = 10,
-    vector_weight=0.7,
-    keyword_weight=0.3
+    vector_weight=0.65,
+    keyword_weight=0.35
 ) -> list[ScoredChunk]:
     vector, keyword = retrieve_hybrid(query, embedder, store, k=pool)
     return fuse_rrf(
@@ -132,3 +133,48 @@ def retrieve_fused(
         vector_weight=vector_weight,
         keyword_weight=keyword_weight,
     )
+
+
+_cross_encoder: CrossEncoder | None = None
+
+def _get_cross_encoder() -> CrossEncoder:
+    global _cross_encoder
+    if _cross_encoder is None:
+        _cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+    return _cross_encoder
+
+def cross_encode_rerank(query: str, hits: list[ScoredChunk], k: int) -> list[ScoredChunk]:
+    """Reorder ``hits`` with a cross-encoder and keep the top ``k``."""
+    if not hits:
+        return []
+    pairs = [
+        (query, f"{hit.chunk.section_title} {hit.chunk.text}") for hit in hits
+    ]
+    _cross_encoder = _get_cross_encoder()
+    scores = _cross_encoder.predict(pairs)
+    ranked = [
+        ScoredChunk(chunk=hit.chunk, score=float(score))
+        for hit, score in zip(hits, scores, strict=True)
+    ]
+    ranked.sort(key=lambda hit: hit.score, reverse=True)
+    return ranked[:k]
+
+
+def retrieve_reranked(
+    query: str,
+    embedder: EmbeddingAdapter,
+    store: VectorStoreAdapter,
+    k: int = 3,
+    pool: int = 10,
+    vector_weight=0.65,
+    keyword_weight=0.35
+) -> list[ScoredChunk]:
+    vector, keyword = retrieve_hybrid(query, embedder, store, k=pool)
+    fused = fuse_rrf(
+        vector,
+        keyword,
+        k=pool,
+        vector_weight=vector_weight,
+        keyword_weight=keyword_weight,
+    )
+    return cross_encode_rerank(query, fused, k)
