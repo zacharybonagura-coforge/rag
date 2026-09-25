@@ -59,3 +59,22 @@ explicit_package_bases = true
 [[tool.mypy.overrides]]
 module = ["pymupdf4llm", "pgvector.psycopg", "rank_bm25"]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "src/harness/run_*.py",
+    "src/adapters/factories.py",
+    "src/adapters/*/base.py",
+    "src/adapters/store/pgvector.py",
+    "src/adapters/generation/ollama.py",
+    "src/adapters/embeddings/sentence_transformer.py",
+]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+]
