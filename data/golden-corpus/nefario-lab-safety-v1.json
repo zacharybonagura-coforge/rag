@@ -55,7 +55,11 @@
         ],
         "gold_section": "Accidents",
         "gold_subsection": "",
-        "must_include": ["Nefario", "Both"]
+        "must_include": [
+          "Nefario", 
+          ["Both", "hums or screams"]
+        ],
+        "must_exclude": ["Gru", "step back"]
       },
       {
         "id": "nefario-wifi",
