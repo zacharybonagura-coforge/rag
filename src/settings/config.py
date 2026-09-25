@@ -36,6 +36,7 @@ class Settings:
     chunk_overlap: int
     hybrid_retrieve: bool
     cross_encode: bool
+    prompt_name: str
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -76,4 +77,5 @@ class Settings:
             chunk_overlap=int(os.environ.get("CHUNK_OVERLAP", "80")),
             hybrid_retrieve=_env_bool("HYBRID_RETRIEVE", True),
             cross_encode=_env_bool("CROSS_ENCODE", True),
+            prompt_name=os.environ.get("PROMPT_NAME", "policy.v3")
         )
