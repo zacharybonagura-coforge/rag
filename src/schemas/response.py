@@ -29,7 +29,7 @@ class RetrievedChunkRef(BaseModel):
     subsection_title: str = ""
     part: int = 0
     page: int | None = None
-    distance: float
+    score: float
 
 
 class RagResponse(BaseModel):
@@ -41,9 +41,16 @@ class RagResponse(BaseModel):
     retrieved_chunks: list[RetrievedChunkRef]
 
 
+REFUSE = "The provided policy does not answer this question."
+
+
+def _is_refuse(answer: str) -> bool:
+    return answer.strip().lower() == REFUSE.lower()
+
+
 def build_response(query: str, answer: str, hits: list[ScoredChunk]) -> RagResponse:
-    """Attach a top-hit citation and retrieved refs to ``answer``."""
-    top = hits[0] if hits else None
+    """Attach a top-hit citation unless the model refused."""
+    top = hits[0] if hits and not _is_refuse(answer) else None
     return RagResponse(
         query=query,
         answer=answer,
@@ -71,7 +78,7 @@ def build_response(query: str, answer: str, hits: list[ScoredChunk]) -> RagRespo
                 subsection_title=hit.chunk.subsection_title,
                 part=hit.chunk.part,
                 page=hit.chunk.page,
-                distance=hit.score,
+                score=hit.score,
             )
             for hit in hits
         ],
