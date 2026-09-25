@@ -9,6 +9,13 @@ from enums import EmbeddingProvider, ModelProvider, StoreProvider
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
 @dataclass(frozen=True)
 class Settings:
     """Paths and model hosts read from the environment, with lab defaults."""
@@ -24,6 +31,9 @@ class Settings:
     corpus_path: Path
     runs_dir: Path
     retrieve_k: int
+    chunk_max_chars: int
+    chunk_overlap: int
+    hybrid_retrieve: bool
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -59,4 +69,7 @@ class Settings:
             ),
             runs_dir=Path(os.environ.get("RUNS_DIR", str(ROOT / "runs"))),
             retrieve_k=int(os.environ.get("RETRIEVE_K", "3")),
+            chunk_max_chars=int(os.environ.get("CHUNK_MAX_CHARS", "500")),
+            chunk_overlap=int(os.environ.get("CHUNK_OVERLAP", "100")),
+            hybrid_retrieve=_env_bool("HYBRID_RETRIEVE", True),
         )
