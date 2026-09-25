@@ -18,7 +18,7 @@
       {
         "id": "girls-bedtime",
         "type": "fact",
-        "query": "When must bunk room lights stay dim, and when do freeze rays stop?",
+        "query": "When must bunk lights stay low, and when do freeze rays end?",
         "gold_chunk_ids": ["girls-house-rules-v1:v1.0:section-1:sub-1"],
         "gold_section": "Who Is In Charge",
         "gold_subsection": "Bedtime",
@@ -60,6 +60,15 @@
         "gold_subsection": "",
         "must_include": ["The provided policy does not answer this question."],
         "must_exclude": ["cited from"]
+      },
+      {
+        "id": "girls-tag-qx",
+        "type": "fact",
+        "query": "What is the code that opens the latch by the rear door?",
+        "gold_chunk_ids": [],
+        "gold_section": "Who Is In Charge",
+        "gold_subsection": "Playtime",
+        "must_include": ["QX-4M-88L"]
       }
     ]
   }

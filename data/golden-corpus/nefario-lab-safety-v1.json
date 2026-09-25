@@ -27,7 +27,7 @@
       {
         "id": "nefario-shrink-keys",
         "type": "fact",
-        "query": "Who has the keys to the shrink ray cabinet?",
+        "query": "Who has the keys to the cabinet that holds the shrink gun?",
         "gold_chunk_ids": ["nefario-lab-safety-v1:v1.0:section-2:sub-2"],
         "gold_section": "Workstations",
         "gold_subsection": "Shrink Ray Cabinet",
@@ -36,7 +36,7 @@
       {
         "id": "nefario-goggle-count",
         "type": "table",
-        "query": "How many safety goggles are on the hook wall?",
+        "query": "How many goggles are on the hook wall?",
         "gold_chunk_ids": [
           "nefario-lab-safety-v1:v1.0:section-3:part-0",
           "nefario-lab-safety-v1:v1.0:section-3:part-1"

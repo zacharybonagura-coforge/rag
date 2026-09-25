@@ -6,7 +6,7 @@
     {
       "id": "gru-briefing-time",
       "type": "fact",
-      "query": "What time do minions report for the morning briefing?",
+      "query": "What time do minions report for the morning duty?",
       "gold_chunk_ids": ["gru-minion-handbook-v2:v2.0:section-2:sub-1:part-0"],
       "gold_section": "Daily Operations",
       "gold_subsection": "Morning Briefing",
@@ -42,7 +42,7 @@
     {
       "id": "gru-visitor-door",
       "type": "fact",
-      "query": "What should a minion do if Vector or El Macho appears at the door?",
+      "query": "What should a minion do if Vector or El Macho show up at the house?",
       "gold_chunk_ids": [
         "gru-minion-handbook-v2:v2.0:section-4:part-0",
         "gru-minion-handbook-v2:v2.0:section-4:part-1"
@@ -55,7 +55,7 @@
     {
       "id": "gru-alarm-couch",
       "type": "fact",
-      "query": "Where do minions take the girls if the house alarm sounds?",
+      "query": "Where do minions bring the girls if the alarm sounds off?",
       "gold_chunk_ids": [
         "gru-minion-handbook-v2:v2.0:section-5:part-0",
         "gru-minion-handbook-v2:v2.0:section-5:part-1"
