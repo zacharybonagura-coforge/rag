@@ -55,7 +55,17 @@
         ],
         "gold_section": "Accidents",
         "gold_subsection": "",
-        "must_include": ["Nefario"]
+        "must_include": ["Nefario", "Both"]
+      },
+      {
+        "id": "nefario-wifi",
+        "type": "unanswerable",
+        "query": "What is the lab wifi password?",
+        "gold_chunk_ids": [],
+        "gold_section": "",
+        "gold_subsection": "",
+        "must_include": ["The provided policy does not answer this question."],
+        "must_exclude": ["cited from"]
       }
     ]
   }

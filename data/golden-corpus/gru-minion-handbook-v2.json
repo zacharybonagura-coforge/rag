@@ -20,8 +20,14 @@
       "gold_chunk_ids": ["gru-minion-handbook-v2:v2.0:section-2:sub-3"],
       "gold_section": "Daily Operations",
       "gold_subsection": "Banana Service",
-      "must_include": ["one banana before noon", "two after"],
-      "must_exclude": ["two bananas before noon", "one after"]
+      "must_include": [
+        "one banana before noon",
+        ["two after", "two bananas after"]
+      ],
+      "must_exclude": [
+        "two bananas before noon",
+        ["one after", "one banana after"]
+      ]
     },
     {
       "id": "gru-communicator",
@@ -58,6 +64,16 @@
       "gold_subsection": "",
       "must_include": ["orange"],
       "must_exclude": []
+    },
+    {
+      "id": "gru-salary",
+      "type": "unanswerable",
+      "query": "What is a minion's starting salary?",
+      "gold_chunk_ids": [],
+      "gold_section": "",
+      "gold_subsection": "",
+      "must_include": ["The provided policy does not answer this question."],
+      "must_exclude": ["cited from"]
     }
   ]
 }

@@ -49,7 +49,17 @@
         "gold_chunk_ids": ["girls-house-rules-v1:v1.0:section-3:sub-1"],
         "gold_section": "Lab and Living Room",
         "gold_subsection": "Secrets",
-        "must_include": ["Moon"]
+        "must_include": ["Moon", "world domination"]
+      },
+      {
+        "id": "girls-piano",
+        "type": "unanswerable",
+        "query": "What time is Edith's piano lesson?",
+        "gold_chunk_ids": [],
+        "gold_section": "",
+        "gold_subsection": "",
+        "must_include": ["The provided policy does not answer this question."],
+        "must_exclude": ["cited from"]
       }
     ]
   }

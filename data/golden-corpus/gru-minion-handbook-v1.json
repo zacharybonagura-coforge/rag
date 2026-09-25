@@ -20,8 +20,14 @@
       "gold_chunk_ids": ["gru-minion-handbook-v1:v1.0:section-2:sub-3"],
       "gold_section": "Daily Operations",
       "gold_subsection": "Banana Service",
-      "must_include": ["two bananas before noon", "one after"],
-      "must_exclude": ["one banana before noon", "two after"]
+      "must_include": [
+        "two bananas before noon",
+        ["one after", "one banana after"]
+      ],
+      "must_exclude": [
+        "one banana before noon",
+        ["two after", "two bananas after"]
+      ]
     },
     {
       "id": "gru-communicator",
