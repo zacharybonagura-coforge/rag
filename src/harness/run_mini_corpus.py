@@ -6,11 +6,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from adapters.factories import build_embedder, build_generator, build_store
-from settings.config import Settings
 from generate import generate
 from ingest import ingest
 from retrieve import retrieve
 from schemas.response import RagResponse, build_response
+from settings.config import Settings
 
 ROOT = Path(__file__).resolve().parents[2]
 CORPUS = ROOT / "data/corpus-tiny/"

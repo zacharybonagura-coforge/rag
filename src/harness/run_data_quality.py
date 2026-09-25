@@ -6,11 +6,11 @@ from datetime import UTC, datetime
 
 from adapters.factories import build_embedder, build_generator
 from adapters.store.pgvector import PgVectorStoreAdapter
-from settings.config import Settings
 from generate import generate
 from ingest import ingest
 from schemas.chunk import ScoredChunk
 from schemas.response import build_response
+from settings.config import Settings
 
 CASES = [
     {"id": "gru-briefing-time", "query": "What time do minions report for the morning briefing?"},
