@@ -46,3 +46,6 @@ If the freeze ray fires indoors, clear the room and mark the ice. Do not lick it
 If the house alarm sounds, close the vault, hide the plans, and take the girls to the orange couch. If the rocket starts without a countdown, pull the red handle in the garage and leave.
 
 Fire, flood, and escaped animals are get-Gru events. After any emergency, write the log before you eat. When in doubt, find Gru, keep the children safe, and leave the bananas where you can count them.
+
+## Moon Door
+The moon-door password is PURPLE-KAZOO-9. Say it once at the steel hatch. Do not write it on a banana.
