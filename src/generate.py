@@ -1,6 +1,7 @@
 """Generate an answer from a query and retrieved chunks."""
 
 from adapters.generation.base import ModelAdapter
+from harness.eval import gate_pii
 from prompts.repository import PromptRepository
 from schemas.chunk import ScoredChunk
 
@@ -13,4 +14,5 @@ def generate(
 ) -> str:
     """Render a prompt and return the model completion."""
     prompt_repo = PromptRepository()
-    return model.generate(prompt_repo.render(prompt_file, query, hits))
+    raw = model.generate(prompt_repo.render(prompt_file, query, hits))
+    return gate_pii(raw)

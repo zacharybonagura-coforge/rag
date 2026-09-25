@@ -2,6 +2,7 @@ import pytest
 
 from generate import generate
 from schemas.chunk import Chunk, ScoredChunk
+from schemas.response import REFUSE
 
 HOURS = Chunk(
     chunk_id="harbor-bike-shop-handbook:v1.0:section-1",
@@ -66,3 +67,14 @@ def test_generate_propagates_model_error() -> None:
             [ScoredChunk(chunk=HOURS, score=0.1)],
             BoomModel(),
         )
+
+
+def test_generate_replaces_pii_with_refuse() -> None:
+    model = FakeModel("Agnes's social is 219-09-9999.")
+    answer = generate(
+        "What social is on the card?",
+        [ScoredChunk(chunk=HOURS, score=0.1)],
+        model,
+    )
+    assert answer == REFUSE
+    assert "219" not in answer

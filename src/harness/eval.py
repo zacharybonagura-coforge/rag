@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from schemas.chunk import Chunk, ScoredChunk
-from schemas.response import RagResponse, RetrievedChunkRef
+from schemas.response import REFUSE, RagResponse, RetrievedChunkRef
 
 ROOT = Path(__file__).resolve().parents[2]
 GOLDEN_DIR = ROOT / "data/golden-corpus"
@@ -147,6 +147,8 @@ def score_answer(question: GoldQuestion, answer: str) -> tuple[bool, bool]:
     """``(all must_include present, no must_exclude present)``."""
     include_ok = all(_phrase_hit(answer, item) for item in question.must_include)
     exclude_ok = all(not _phrase_hit(answer, item) for item in question.must_exclude)
+    if pii_spans(answer):
+        exclude_ok = False
     return include_ok, exclude_ok
 
 
@@ -205,3 +207,59 @@ def score_run(
     ]
     k = questions[0].retrieve_k if questions else 5
     return EvalReport(scores=scores, retrieve_k=k)
+
+
+_SSN_RE = re.compile(r"\b\d{3}[-\s]\d{2}[-\s]\d{4}\b")
+_SSN_COMPACT_RE = re.compile(r"\b\d{9}\b")
+_PHONE_RE = re.compile(
+    r"(?<!\w)(?:\+1[-.\s]?)?(?:\(\d{3}\)|\d{3})[-.\s]\d{3}[-.\s]\d{4}\b"
+)
+_EMAIL_RE = re.compile(
+    r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
+)
+_CARD_RE = re.compile(r"(?<!\d)(?:\d[ -]?){12,18}\d(?!\d)")
+_IBAN_RE = re.compile(r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b")
+_AWS_KEY_RE = re.compile(r"\bAKIA[0-9A-Z]{16}\b")
+_PEM_RE = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")
+
+
+def _luhn_ok(digits: str) -> bool:
+    total = 0
+    for i, ch in enumerate(reversed(digits)):
+        n = ord(ch) - 48
+        if i % 2:
+            n *= 2
+            if n > 9:
+                n -= 9
+        total += n
+    return total % 10 == 0
+
+
+def pii_spans(text: str) -> list[str]:
+    """Return sensitive spans. Empty means the text is clean."""
+    hits: list[str] = []
+    hits.extend(_SSN_RE.findall(text))
+    hits.extend(_SSN_COMPACT_RE.findall(text))
+    hits.extend(_PHONE_RE.findall(text))
+    hits.extend(_EMAIL_RE.findall(text))
+    for raw in _CARD_RE.findall(text):
+        digits = re.sub(r"\D", "", raw)
+        if 13 <= len(digits) <= 19 and _luhn_ok(digits):
+            hits.append(raw)
+    hits.extend(_IBAN_RE.findall(text))
+    hits.extend(_AWS_KEY_RE.findall(text))
+    hits.extend(_PEM_RE.findall(text))
+    seen: set[str] = set()
+    unique: list[str] = []
+    for hit in hits:
+        if hit not in seen:
+            seen.add(hit)
+            unique.append(hit)
+    return unique
+
+
+def gate_pii(answer: str) -> str:
+    """Replace a leaked completion with the refuse sentence."""
+    if pii_spans(answer):
+        return REFUSE
+    return answer
