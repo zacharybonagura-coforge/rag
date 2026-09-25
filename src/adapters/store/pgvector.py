@@ -148,3 +148,47 @@ class PgVectorStoreAdapter:
             )
             for row in rows
         ]
+    
+
+    def search_all(
+        self,
+        query_embedding: list[float],
+        k: int = 3,
+    ) -> list[ScoredChunk]:
+        """Return the ``k`` nearest chunks by cosine distance.
+
+        Includes superseded versions.
+        """
+        with self._connect() as conn, conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT chunk_id, document, version, section,
+                    section_title, text, subsection,
+                    subsection_title, part, page, embedding,
+                    (embedding <=> %s::vector) AS distance
+                FROM chunks
+                ORDER BY embedding <=> %s::vector ASC
+                LIMIT %s
+                """,
+                (query_embedding, query_embedding, k),
+            )
+            rows = cur.fetchall()
+        return [
+            ScoredChunk(
+                chunk=Chunk(
+                    chunk_id=row[0],
+                    document=row[1],
+                    version=row[2],
+                    section=row[3],
+                    section_title=row[4],
+                    text=row[5],
+                    subsection=row[6],
+                    subsection_title=row[7],
+                    part=row[8],
+                    page=row[9],
+                    embedding=list(row[10]),
+                ),
+                score=float(row[11]),
+            )
+            for row in rows
+        ]
