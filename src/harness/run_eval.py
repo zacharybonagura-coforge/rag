@@ -13,7 +13,13 @@ from harness.eval import (
     score_question,
 )
 from ingest import ingest
-from retrieve import cross_encode_rerank, retrieve, retrieve_fused, retrieve_reranked
+from retrieve import (
+    cross_encode_rerank,
+    retrieve,
+    retrieve_fused,
+    retrieve_reranked,
+    route_query,
+)
 from schemas.response import RagResponse, build_response
 from settings.config import Settings
 
@@ -68,11 +74,13 @@ def main() -> None:
         print(f"{doc.document}: {status}", file=sys.stderr)
     print(f"stored {len(chunks)} chunks from {corpus}", file=sys.stderr)
 
-    prompt_file = settings.prompt_name
+    
     pool = settings.retrieve_pool
     scores = []
     responses = []
     for question in questions:
+        scope = route_query(question.query)
+        prompt = "policy.compare.v1" if scope == "all" else settings.prompt_name
         if settings.hybrid_retrieve and settings.cross_encode:
             hits = retrieve_reranked(
                 question.query, embedder, store,
@@ -86,15 +94,16 @@ def main() -> None:
         elif settings.cross_encode:
             hits = cross_encode_rerank(
                 question.query,
-                retrieve(question.query, embedder, store, k=pool),
-                question.retrieve_k,
+                retrieve(question.query, embedder, store, k=pool, scope=scope),
+                question.retrieve_k
             )
         else:
             hits = retrieve(
-                question.query, embedder, store, k=question.retrieve_k,
+                question.query, embedder, store, 
+                k=question.retrieve_k, scope=scope
             )
 
-        answer = generate(question.query, hits, model, prompt_file)
+        answer = generate(question.query, hits, model, prompt)
         score = score_question(question, hits=hits, answer=answer)
         scores.append(score)
         responses.append(build_response(question.query, answer, hits))
