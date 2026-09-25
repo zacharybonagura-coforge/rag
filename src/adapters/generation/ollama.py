@@ -28,7 +28,7 @@ class OllamaAdapter:
                 "model": self.model_id,
                 "prompt": prompt,
                 "stream": False,
-                "options": {"temperature": 0},
+                "options": {"temperature": 0, "seed": 42},
             },
             timeout=120.0,
         )
