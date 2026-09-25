@@ -72,8 +72,8 @@ class Settings:
             runs_dir=Path(os.environ.get("RUNS_DIR", str(ROOT / "runs"))),
             retrieve_k=int(os.environ.get("RETRIEVE_K", "3")),
             retrieve_pool=int(os.environ.get("RETRIEVE_POOL", "10")),
-            chunk_max_chars=int(os.environ.get("CHUNK_MAX_CHARS", "500")),
-            chunk_overlap=int(os.environ.get("CHUNK_OVERLAP", "100")),
+            chunk_max_chars=int(os.environ.get("CHUNK_MAX_CHARS", "250")),
+            chunk_overlap=int(os.environ.get("CHUNK_OVERLAP", "80")),
             hybrid_retrieve=_env_bool("HYBRID_RETRIEVE", True),
-            cross_encode=_env_bool("CROSS_ENCODE", False),
+            cross_encode=_env_bool("CROSS_ENCODE", True),
         )
