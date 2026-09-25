@@ -2,8 +2,15 @@ from collections.abc import Sequence
 
 import pytest
 
-from retrieve import retrieve, retrieve_hybrid, route_query
 from schemas.chunk import Chunk, ScoredChunk
+from retrieve import (
+    cross_encode_rerank,
+    retrieve,
+    retrieve_hybrid,
+    retrieve_reranked,
+    route_query,
+)
+import retrieve as retrieve_mod
 
 V1 = Chunk(
     chunk_id="gru-minion-handbook-v1:v1.0:section-2",
@@ -175,3 +182,60 @@ def test_retrieve_hybrid_explicit_latest_overrides_compare_query() -> None:
 
     assert store.last_method == "search"
     assert {h.chunk.document for h in keyword} == {"gru-minion-handbook-v2"}
+
+
+def test_cross_encode_rerank_empty_hits() -> None:
+    assert cross_encode_rerank("bananas?", [], k=3) == []
+
+
+def test_cross_encode_rerank_reorders(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeEncoder:
+        def predict(self, pairs: list[tuple[str, str]]) -> list[float]:
+            assert pairs[0][0] == COMPARE
+            return [0.2, 0.9]
+
+    monkeypatch.setattr("retrieve._get_cross_encoder", lambda: FakeEncoder())
+    hits = [
+        ScoredChunk(chunk=V1, score=0.4),
+        ScoredChunk(chunk=V2, score=0.3),
+    ]
+
+    ranked = cross_encode_rerank(COMPARE, hits, k=1)
+
+    assert [h.chunk.document for h in ranked] == ["gru-minion-handbook-v2"]
+    assert ranked[0].score == pytest.approx(0.9)
+
+
+def test_retrieve_reranked_fuses_then_reranks(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeEncoder:
+        def predict(self, pairs: list[tuple[str, str]]) -> list[float]:
+            return [0.1] * len(pairs)
+
+    monkeypatch.setattr("retrieve._get_cross_encoder", lambda: FakeEncoder())
+    store = _store()
+
+    hits = retrieve_reranked(COMPARE, FakeEmbedder(), store, k=2, pool=3)
+
+    assert store.last_method == "search_all"
+    assert {h.chunk.document for h in hits} <= {
+        "gru-minion-handbook-v1",
+        "gru-minion-handbook-v2",
+    }
+    assert len(hits) <= 2
+
+
+def test_get_cross_encoder_lazy_loads_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    created: list[str] = []
+
+    class FakeEncoder:
+        def __init__(self, name: str) -> None:
+            created.append(name)
+
+    monkeypatch.setattr(retrieve_mod, "_cross_encoder", None)
+    monkeypatch.setattr(retrieve_mod, "CrossEncoder", FakeEncoder)
+
+    first = retrieve_mod._get_cross_encoder()
+    second = retrieve_mod._get_cross_encoder()
+
+    assert first is second
+    assert created == ["cross-encoder/ms-marco-MiniLM-L-6-v2"]

@@ -85,3 +85,12 @@ def test_from_env_rejects_non_int_dimension(clean_env: pytest.MonkeyPatch) -> No
 
     with pytest.raises(ValueError):
         Settings.from_env()
+
+
+def test_from_env_reads_bool_flags(clean_env: pytest.MonkeyPatch) -> None:
+    clean_env.setenv("DATABASE_URL", "postgresql://rag:rag@localhost:5432/rag")
+    clean_env.setenv("HYBRID_RETRIEVE", "off")
+    clean_env.setenv("CROSS_ENCODE", "0")
+    settings = Settings.from_env()
+    assert settings.hybrid_retrieve is False
+    assert settings.cross_encode is False

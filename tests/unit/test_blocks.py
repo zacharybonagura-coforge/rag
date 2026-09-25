@@ -257,3 +257,14 @@ def test_load_pdf_leaves_prose_pipes_and_fenced_tables(
         ("body", "```"),
         ("body", "![alt][ref]"),
     ]
+
+
+def test_load_pdf_drops_non_int_page(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "blocks.pymupdf4llm.to_markdown",
+        lambda *_a, **_k: [{"metadata": {"page": "1"}, "text": "# Doc (Version 1.0)\n"}],
+    )
+    blocks = load(_pdf(tmp_path))
+    assert blocks[0].page is None

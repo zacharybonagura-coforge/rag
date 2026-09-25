@@ -81,14 +81,17 @@ def test_generate_replaces_pii_with_refuse() -> None:
 
 
 V1 = Chunk(
-    chunk_id="gru-minion-handbook-v1:v1.0:section-2",
+    chunk_id="gru-minion-handbook-v1:v1.0:section-2:sub-3",
     document="gru-minion-handbook-v1",
     version="1.0",
     section="2",
-    section_title="Banana Service",
+    section_title="Daily Operations",
+    subsection="3",
+    subsection_title="Banana Service",
     text="Each minion may take two bananas before noon.",
     embedding=[0.0] * 768,
 )
+
 V2 = Chunk(
     chunk_id="gru-minion-handbook-v2:v2.0:section-2",
     document="gru-minion-handbook-v2",
@@ -98,24 +101,7 @@ V2 = Chunk(
     text="Each minion may take one banana before noon.",
     embedding=[0.0] * 768,
 )
-GIRLS = Chunk(
-    chunk_id="girls-house-rules-v1:v1.0:section-1",
-    document="girls-house-rules-v1",
-    version="1.0",
-    section="1",
-    section_title="Bedtime",
-    text="Lights out at 8pm.",
-    embedding=[0.0] * 768,
-)
-HARBOR = Chunk(
-    chunk_id="harbor-bike-shop-handbook:v1.0:section-1",
-    document="harbor-bike-shop-handbook",
-    version="1.0",
-    section="1",
-    section_title="Hours",
-    text="The shop closes at 6pm.",
-    embedding=[0.0] * 768,
-)
+
 
 def test_generate_renders_compare_prompt() -> None:
     model = FakeModel()
@@ -129,7 +115,7 @@ def test_generate_renders_compare_prompt() -> None:
 
     assert model.last_prompt is not None
     assert query in model.last_prompt
-    assert "gru-minion-handbook-v1 §2 Banana Service" in model.last_prompt
+    assert "gru-minion-handbook-v1 §2 Daily Operations / Banana Service" in model.last_prompt
     assert "gru-minion-handbook-v2 §2 Banana Service" in model.last_prompt
     assert "Do not prefer a higher-ranked excerpt" in model.last_prompt
     assert V1.text in model.last_prompt
