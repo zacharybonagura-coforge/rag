@@ -178,7 +178,7 @@ def _hits_from_response(response: RagResponse) -> list[ScoredChunk]:
                 section_title=ref.section_title,
                 subsection=ref.subsection,
                 subsection_title=ref.subsection_title,
-                text="",
+                text=ref.text,
                 part=ref.part,
                 page=ref.page,
                 embedding=[],

@@ -3,11 +3,11 @@
 import re
 
 from rank_bm25 import BM25Okapi
+from sentence_transformers import CrossEncoder
 
 from adapters.embeddings.base import EmbeddingAdapter
 from adapters.store.base import VectorStoreAdapter
 from schemas.chunk import Chunk, ScoredChunk
-from sentence_transformers import CrossEncoder
 
 TOKEN_RE = re.compile(r"[a-z0-9]+(?:'[a-z]+)?")
 STOPWORDS = frozenset({

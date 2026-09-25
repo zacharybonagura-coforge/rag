@@ -13,7 +13,7 @@ from harness.eval import (
     score_question,
 )
 from ingest import ingest
-from retrieve import retrieve, retrieve_fused, cross_encode_rerank, retrieve_reranked
+from retrieve import cross_encode_rerank, retrieve, retrieve_fused, retrieve_reranked
 from schemas.response import RagResponse, build_response
 from settings.config import Settings
 

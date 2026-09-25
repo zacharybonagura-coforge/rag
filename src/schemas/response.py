@@ -27,6 +27,7 @@ class RetrievedChunkRef(BaseModel):
     section_title: str
     subsection: str = ""
     subsection_title: str = ""
+    text: str = ""
     part: int = 0
     page: int | None = None
     score: float
@@ -76,6 +77,7 @@ def build_response(query: str, answer: str, hits: list[ScoredChunk]) -> RagRespo
                 section_title=hit.chunk.section_title,
                 subsection=hit.chunk.subsection,
                 subsection_title=hit.chunk.subsection_title,
+                text=hit.chunk.text,
                 part=hit.chunk.part,
                 page=hit.chunk.page,
                 score=hit.score,
