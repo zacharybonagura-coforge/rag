@@ -62,13 +62,22 @@
         "must_exclude": ["cited from"]
       },
       {
+        "id": "girls-tag-rb3",
+        "type": "fact",
+        "query": "What does code with 62443 do?",
+        "gold_chunk_ids": [],
+        "gold_section": "Lockers",
+        "gold_subsection": "",
+        "must_include": ["opens", "timer", "box"]
+      },
+      {
         "id": "girls-tag-qx",
         "type": "fact",
         "query": "What is the code that opens the latch by the rear door?",
         "gold_chunk_ids": [],
         "gold_section": "Who Is In Charge",
         "gold_subsection": "Playtime",
-        "must_include": ["QX-4M-88L"]
+        "must_include": ["UN-S-$!A4C9-77B0-QL"]
       }
     ]
   }
