@@ -1,6 +1,7 @@
 """Retrieve nearest chunks for a natural-language query."""
 
 import re
+from typing import Literal
 
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder
@@ -64,14 +65,31 @@ def search_keyword(
     return scored[:k]
 
 
+COMPARE_RE = re.compile(
+    r"\b("
+    r"v1|v2|version|versions|"
+    r"compare|compared|difference|differ|changed|change|"
+    r"used to|previously|old policy|new policy|"
+    r"between .+ and"
+    r")\b",
+    re.IGNORECASE,
+)
+
+def route_query(query: str) -> Literal["latest", "all"]:
+    return "all" if COMPARE_RE.search(query) else "latest"
+
+
 def retrieve(
     query: str,
     embedder: EmbeddingAdapter,
     store: VectorStoreAdapter,
     k: int = 3,
+    scope: str = "latest"
 ) -> list[ScoredChunk]:
     """Embed ``query`` and return the ``k`` nearest stored chunks."""
     query_embedding = embedder.embed_query(query)
+    if scope == "all":
+        return store.search_all(query_embedding, k)
     return store.search(query_embedding, k)
 
 
@@ -80,9 +98,13 @@ def retrieve_hybrid(
     embedder: EmbeddingAdapter,
     store: VectorStoreAdapter,
     k: int = 3,
+    scope: str | None = None
 ) -> tuple[list[ScoredChunk], list[ScoredChunk]]:
-    vector = retrieve(query, embedder, store, k)
-    keyword = search_keyword(query, latest_chunks(store.load_chunks()), k)
+    scope = scope or route_query(query)
+    pool = store.load_chunks()
+    keyword_corpus = pool if scope == "all" else latest_chunks(pool)
+    vector = retrieve(query, embedder, store, k, scope)
+    keyword = search_keyword(query, keyword_corpus, k)
 
     return vector, keyword
 
