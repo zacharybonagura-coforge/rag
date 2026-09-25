@@ -1,0 +1,217 @@
+[
+    {
+      "id": "gru-briefing-time",
+      "unfiltered": {
+        "query": "What time do minions report for the morning briefing?",
+        "answer": "Minions report for the morning briefing at 7:30am, according to gru-minion-handbook-v1 \u00a72 Daily Operations / Morning Briefing.",
+        "citation": {
+          "document": "gru-minion-handbook-v1",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Daily Operations",
+          "subsection": "1",
+          "subsection_title": "Morning Briefing",
+          "part": 0,
+          "page": null
+        },
+        "retrieved_chunks": [
+          {
+            "document": "gru-minion-handbook-v1",
+            "version": "1.0",
+            "section": "2",
+            "section_title": "Daily Operations",
+            "subsection": "1",
+            "subsection_title": "Morning Briefing",
+            "text": "Report at 7:30am. Wear goggles. Bring your own banana. Gru speaks first. Dr. Nefario speaks second if something is on fire. If Gru is still in his robe, wait.\nThe briefing names the target, the vehicle, and today's duty. Banana duty means you do not touch the freeze ray. Lab duty means you do not open the vault. Child watch means you do not mention world domination in front of the girls.\nLate minions stand in the back.",
+            "part": 0,
+            "page": null,
+            "score": 0.5086629986763
+          },
+          {
+            "document": "gru-minion-handbook-v2",
+            "version": "2.0",
+            "section": "2",
+            "section_title": "Daily Operations",
+            "subsection": "1",
+            "subsection_title": "Morning Briefing",
+            "text": "Report at 8:00am. Wear goggles. Bring your own banana. Gru speaks first. Dr. Nefario speaks second if something is on fire. If Gru is still in his robe, wait.\nThe briefing names the target, the vehicle, and today's duty. Banana duty means you do not touch the freeze ray. Lab duty means you do not open the vault. Child watch means you do not mention world domination in front of the girls.\nLate minions stand in the back. Two late arrivals in one week means you mop the garage. The mop is returned.",
+            "part": 0,
+            "page": null,
+            "score": 0.5119085304791602
+          },
+          {
+            "document": "gru-minion-handbook-v1",
+            "version": "1.0",
+            "section": "2",
+            "section_title": "Daily Operations",
+            "subsection": "1",
+            "subsection_title": "Morning Briefing",
+            "text": "The briefing names the target, the vehicle, and today's duty. Banana duty means you do not touch the freeze ray. Lab duty means you do not open the vault. Child watch means you do not mention world domination in front of the girls.\nLate minions stand in the back. Three late arrivals in one week means you clean the antifreeze tank with a toothbrush. The toothbrush is not returned.",
+            "part": 1,
+            "page": null,
+            "score": 0.5170668959617615
+          }
+        ]
+      },
+      "latest": {
+        "query": "What time do minions report for the morning briefing?",
+        "answer": "Minions report for the morning briefing at 8:00am.\n(cited from gru-minion-handbook-v2 \u00a72 Daily Operations / Morning Briefing)",
+        "citation": {
+          "document": "gru-minion-handbook-v2",
+          "version": "2.0",
+          "section": "2",
+          "section_title": "Daily Operations",
+          "subsection": "1",
+          "subsection_title": "Morning Briefing",
+          "part": 0,
+          "page": null
+        },
+        "retrieved_chunks": [
+          {
+            "document": "gru-minion-handbook-v2",
+            "version": "2.0",
+            "section": "2",
+            "section_title": "Daily Operations",
+            "subsection": "1",
+            "subsection_title": "Morning Briefing",
+            "text": "Report at 8:00am. Wear goggles. Bring your own banana. Gru speaks first. Dr. Nefario speaks second if something is on fire. If Gru is still in his robe, wait.\nThe briefing names the target, the vehicle, and today's duty. Banana duty means you do not touch the freeze ray. Lab duty means you do not open the vault. Child watch means you do not mention world domination in front of the girls.\nLate minions stand in the back. Two late arrivals in one week means you mop the garage. The mop is returned.",
+            "part": 0,
+            "page": null,
+            "score": 0.5119085304791602
+          },
+          {
+            "document": "gru-minion-handbook-v2",
+            "version": "2.0",
+            "section": "1",
+            "section_title": "Mission Overview",
+            "subsection": "",
+            "subsection_title": "",
+            "text": "This handbook is for minions assigned to Gru's house, lab, and lair. It covers daily duty, equipment, bananas, and what to do when a plan fails. Read it before your first shift. Keep one copy in your pocket. Version 2.0 replaces Version 1.0. If the two books disagree, follow this one.\nGru's work changes from week to week. Some weeks the team builds a freeze ray. Some weeks the team babysits. The rules in this book stay the same. A minion who follows it is useful.",
+            "part": 0,
+            "page": null,
+            "score": 0.5358941831651809
+          },
+          {
+            "document": "nefario-lab-safety-v1",
+            "version": "1.0",
+            "section": "3",
+            "section_title": "Inventory",
+            "subsection": "",
+            "subsection_title": "",
+            "text": "Count these items at the start of the shift. Say the count out loud so the minion on the log can write it. Missing gear goes in the log before you eat. Do not wait until after the smoothie.\nItem | Location | Count\nFreeze ray | Rack A | 1\nShrink ray | Cabinet B | 1\nSafety goggles | Hook wall | 24\nRed collection bin | Under bench 3 | 2\nIf the freeze ray count is zero, stop all other work and find Gru. If the goggle count is under twenty, no new minions enter the floor.",
+            "part": 0,
+            "page": null,
+            "score": 0.6308293562633176
+          }
+        ]
+      }
+    },
+    {
+      "id": "gru-moon-door-password",
+      "unfiltered": {
+        "query": "What is the moon-door password?",
+        "answer": "The provided policy does not answer this question. (cited from gru-minion-handbook-v1 \u00a76 Moon Door)",
+        "citation": {
+          "document": "gru-minion-handbook-v1",
+          "version": "1.0",
+          "section": "6",
+          "section_title": "Moon Door",
+          "subsection": "",
+          "subsection_title": "",
+          "part": 0,
+          "page": null
+        },
+        "retrieved_chunks": [
+          {
+            "document": "gru-minion-handbook-v1",
+            "version": "1.0",
+            "section": "6",
+            "section_title": "Moon Door",
+            "subsection": "",
+            "subsection_title": "",
+            "text": "The moon-door password is PURPLE-KAZOO-9. Say it once at the steel hatch. Do not write it on a banana.",
+            "part": 0,
+            "page": null,
+            "score": 0.18009309887330993
+          },
+          {
+            "document": "gru-minion-handbook-v2",
+            "version": "2.0",
+            "section": "6",
+            "section_title": "Moon Door",
+            "subsection": "",
+            "subsection_title": "",
+            "text": "The moon door is welded shut. Minions use the garage ramp. Do not knock. Do not wait at that door.",
+            "part": 0,
+            "page": null,
+            "score": 0.36182109345071833
+          },
+          {
+            "document": "girls-house-rules-v1",
+            "version": "1.0",
+            "section": "4",
+            "section_title": "Lab and Living Room",
+            "subsection": "2",
+            "subsection_title": "Emergencies",
+            "text": "If the house alarm sounds, take the girls to the orange couch. Close the vault. Hide the plans. Get Gru.\nIf a girl is already in the lab, walk her out. Do not hand her a gadget. Do not ask her to hold a flask. Fire, flood, and visitors at the door are get-Gru events. Do not let Vector in for a cookie.\nWhen in doubt, find Gru, keep the girls safe, and leave the unicorns where you can count them.",
+            "part": 0,
+            "page": 3,
+            "score": 0.6610473798456931
+          }
+        ]
+      },
+      "latest": {
+        "query": "What is the moon-door password?",
+        "answer": "The provided policy does not answer this question. (cited from gru-minion-handbook-v2 \u00a76 Moon Door)",
+        "citation": {
+          "document": "gru-minion-handbook-v2",
+          "version": "2.0",
+          "section": "6",
+          "section_title": "Moon Door",
+          "subsection": "",
+          "subsection_title": "",
+          "part": 0,
+          "page": null
+        },
+        "retrieved_chunks": [
+          {
+            "document": "gru-minion-handbook-v2",
+            "version": "2.0",
+            "section": "6",
+            "section_title": "Moon Door",
+            "subsection": "",
+            "subsection_title": "",
+            "text": "The moon door is welded shut. Minions use the garage ramp. Do not knock. Do not wait at that door.",
+            "part": 0,
+            "page": null,
+            "score": 0.36182109345071833
+          },
+          {
+            "document": "girls-house-rules-v1",
+            "version": "1.0",
+            "section": "4",
+            "section_title": "Lab and Living Room",
+            "subsection": "2",
+            "subsection_title": "Emergencies",
+            "text": "If the house alarm sounds, take the girls to the orange couch. Close the vault. Hide the plans. Get Gru.\nIf a girl is already in the lab, walk her out. Do not hand her a gadget. Do not ask her to hold a flask. Fire, flood, and visitors at the door are get-Gru events. Do not let Vector in for a cookie.\nWhen in doubt, find Gru, keep the girls safe, and leave the unicorns where you can count them.",
+            "part": 0,
+            "page": 3,
+            "score": 0.6610473798456931
+          },
+          {
+            "document": "nefario-lab-safety-v1",
+            "version": "1.0",
+            "section": "1",
+            "section_title": "Lab Access",
+            "subsection": "",
+            "subsection_title": "",
+            "text": "This manual is for minions working on the lab floor. It does not replace Gru's field handbook. The lab has its own doors, keys, and rules. Read it before you touch a beaker. Keep one copy on the hook by the yellow door.\nOnly assigned lab minions may enter after 8am. Child watch stays upstairs. Banana duty stays in the kitchen. If you are not on the daily lab list, wait in the hallway. Do not lean on the yellow door. Do not knock with a wrench.",
+            "part": 0,
+            "page": null,
+            "score": 0.663175910711286
+          }
+        ]
+      }
+    }
+  ]
+  

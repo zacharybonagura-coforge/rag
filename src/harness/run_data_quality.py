@@ -40,8 +40,8 @@ def main() -> None:
     chunks, documents = ingest(
         settings.corpus_path,
         embedder,
-        max_chars=settings.chunk_max_chars,
-        overlap=settings.chunk_overlap,
+        max_chars=500,
+        overlap=100,
     )
     store.save_chunks(chunks)
     for doc in documents:
@@ -54,8 +54,8 @@ def main() -> None:
         vector = embedder.embed_query(query)
         all_hits = store.search_all(vector, k)
         latest_hits = store.search(vector, k)
-        all_answer = generate(query, all_hits, model, "policy.v1")
-        latest_answer = generate(query, latest_hits, model, "policy.v1")
+        all_answer = generate(query, all_hits, model, "data-quality.v1")
+        latest_answer = generate(query, latest_hits, model, "data-quality.v1")
 
         print(f"\n=== {case['id']} ===")
         print(query)
