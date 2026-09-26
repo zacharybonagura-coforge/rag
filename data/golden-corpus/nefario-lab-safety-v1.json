@@ -1,0 +1,75 @@
+{
+    "document": "nefario-lab-safety-v1",
+    "corpus_file": "data/corpus/nefario-lab-safety-v1.docx",
+    "retrieve_k": 5,
+    "questions": [
+      {
+        "id": "nefario-lab-hours",
+        "type": "fact",
+        "query": "When may assigned lab minions enter the lab floor?",
+        "gold_chunk_ids": [
+          "nefario-lab-safety-v1:v1.0:section-1:part-0",
+          "nefario-lab-safety-v1:v1.0:section-1:part-1"
+        ],
+        "gold_section": "Lab Access",
+        "gold_subsection": "",
+        "must_include": ["8am"]
+      },
+      {
+        "id": "nefario-freeze-rack",
+        "type": "fact",
+        "query": "Where does the freeze ray stay, and where must the barrel point?",
+        "gold_chunk_ids": ["nefario-lab-safety-v1:v1.0:section-2:sub-1"],
+        "gold_section": "Workstations",
+        "gold_subsection": "Freeze Ray Bench",
+        "must_include": ["marked rack"]
+      },
+      {
+        "id": "nefario-shrink-keys",
+        "type": "fact",
+        "query": "Who has the keys to the cabinet that holds the shrink gun?",
+        "gold_chunk_ids": ["nefario-lab-safety-v1:v1.0:section-2:sub-2"],
+        "gold_section": "Workstations",
+        "gold_subsection": "Shrink Ray Cabinet",
+        "must_include": ["Gru", "Nefario"]
+      },
+      {
+        "id": "nefario-goggle-count",
+        "type": "table",
+        "query": "How many goggles are on the hook wall?",
+        "gold_chunk_ids": [
+          "nefario-lab-safety-v1:v1.0:section-3:part-0",
+          "nefario-lab-safety-v1:v1.0:section-3:part-1"
+        ],
+        "gold_section": "Inventory",
+        "gold_subsection": "",
+        "must_include": ["24"]
+      },
+      {
+        "id": "nefario-hum-scream",
+        "type": "fact",
+        "query": "What should a minion do if a machine hums or screams in the lab?",
+        "gold_chunk_ids": [
+          "nefario-lab-safety-v1:v1.0:section-4:part-0",
+          "nefario-lab-safety-v1:v1.0:section-2:sub-3"
+        ],
+        "gold_section": "Accidents",
+        "gold_subsection": "",
+        "must_include": [
+          "Nefario", 
+          ["Both", "hums or screams"]
+        ],
+        "must_exclude": ["Gru", "step back"]
+      },
+      {
+        "id": "nefario-wifi",
+        "type": "unanswerable",
+        "query": "What is the lab wifi password?",
+        "gold_chunk_ids": [],
+        "gold_section": "",
+        "gold_subsection": "",
+        "must_include": ["The provided policy does not answer this question."],
+        "must_exclude": ["cited from"]
+      }
+    ]
+  }

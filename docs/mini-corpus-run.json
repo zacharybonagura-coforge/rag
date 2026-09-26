@@ -1,0 +1,243 @@
+[
+    {
+      "query": "What days is the shop open?",
+      "answer": "The shop is open Tuesday through Saturday.",
+      "citation": {
+        "document": "harbor-bike-shop-handbook",
+        "version": "1.0",
+        "section": "1",
+        "section_title": "Hours",
+        "subsection": "",
+        "subsection_title": "",
+        "part": 0,
+        "page": null
+      },
+      "retrieved_chunks": [
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "1",
+          "section_title": "Hours",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "The shop is open Tuesday through Saturday from 10am to 6pm. We are closed Sunday and Monday.",
+          "part": 0,
+          "page": null,
+          "score": 0.19119052939471282
+        },
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Rentals",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "City bikes rent for $25 a day. Electric bikes rent for $45 a day. A photo ID is required.",
+          "part": 0,
+          "page": null,
+          "score": 0.7701027095317841
+        }
+      ]
+    },
+    {
+      "query": "Are you open on Sunday?",
+      "answer": "No, we are closed on Sunday.",
+      "citation": {
+        "document": "harbor-bike-shop-handbook",
+        "version": "1.0",
+        "section": "1",
+        "section_title": "Hours",
+        "subsection": "",
+        "subsection_title": "",
+        "part": 0,
+        "page": null
+      },
+      "retrieved_chunks": [
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "1",
+          "section_title": "Hours",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "The shop is open Tuesday through Saturday from 10am to 6pm. We are closed Sunday and Monday.",
+          "part": 0,
+          "page": null,
+          "score": 0.2864710517840938
+        },
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Rentals",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "City bikes rent for $25 a day. Electric bikes rent for $45 a day. A photo ID is required.",
+          "part": 0,
+          "page": null,
+          "score": 0.85926753282547
+        }
+      ]
+    },
+    {
+      "query": "What time do you close?",
+      "answer": "The shop closes at 6pm.",
+      "citation": {
+        "document": "harbor-bike-shop-handbook",
+        "version": "1.0",
+        "section": "1",
+        "section_title": "Hours",
+        "subsection": "",
+        "subsection_title": "",
+        "part": 0,
+        "page": null
+      },
+      "retrieved_chunks": [
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "1",
+          "section_title": "Hours",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "The shop is open Tuesday through Saturday from 10am to 6pm. We are closed Sunday and Monday.",
+          "part": 0,
+          "page": null,
+          "score": 0.39552567031826447
+        },
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Rentals",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "City bikes rent for $25 a day. Electric bikes rent for $45 a day. A photo ID is required.",
+          "part": 0,
+          "page": null,
+          "score": 0.8791757225990295
+        }
+      ]
+    },
+    {
+      "query": "How much is a city bike?",
+      "answer": "A city bike rents for $25 a day.",
+      "citation": {
+        "document": "harbor-bike-shop-handbook",
+        "version": "1.0",
+        "section": "2",
+        "section_title": "Rentals",
+        "subsection": "",
+        "subsection_title": "",
+        "part": 0,
+        "page": null
+      },
+      "retrieved_chunks": [
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Rentals",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "City bikes rent for $25 a day. Electric bikes rent for $45 a day. A photo ID is required.",
+          "part": 0,
+          "page": null,
+          "score": 0.26542405692195425
+        },
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "1",
+          "section_title": "Hours",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "The shop is open Tuesday through Saturday from 10am to 6pm. We are closed Sunday and Monday.",
+          "part": 0,
+          "page": null,
+          "score": 0.8581814338944633
+        }
+      ]
+    },
+    {
+      "query": "How much does an electric bike cost?",
+      "answer": "An electric bike costs $45 a day.",
+      "citation": {
+        "document": "harbor-bike-shop-handbook",
+        "version": "1.0",
+        "section": "2",
+        "section_title": "Rentals",
+        "subsection": "",
+        "subsection_title": "",
+        "part": 0,
+        "page": null
+      },
+      "retrieved_chunks": [
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Rentals",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "City bikes rent for $25 a day. Electric bikes rent for $45 a day. A photo ID is required.",
+          "part": 0,
+          "page": null,
+          "score": 0.3467849298353469
+        },
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "1",
+          "section_title": "Hours",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "The shop is open Tuesday through Saturday from 10am to 6pm. We are closed Sunday and Monday.",
+          "part": 0,
+          "page": null,
+          "score": 0.8942669512549947
+        }
+      ]
+    },
+    {
+      "query": "Do I need a photo ID to rent?",
+      "answer": "Yes, you need a photo ID to rent.",
+      "citation": {
+        "document": "harbor-bike-shop-handbook",
+        "version": "1.0",
+        "section": "2",
+        "section_title": "Rentals",
+        "subsection": "",
+        "subsection_title": "",
+        "part": 0,
+        "page": null
+      },
+      "retrieved_chunks": [
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "2",
+          "section_title": "Rentals",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "City bikes rent for $25 a day. Electric bikes rent for $45 a day. A photo ID is required.",
+          "part": 0,
+          "page": null,
+          "score": 0.6949324426014682
+        },
+        {
+          "document": "harbor-bike-shop-handbook",
+          "version": "1.0",
+          "section": "1",
+          "section_title": "Hours",
+          "subsection": "",
+          "subsection_title": "",
+          "text": "The shop is open Tuesday through Saturday from 10am to 6pm. We are closed Sunday and Monday.",
+          "part": 0,
+          "page": null,
+          "score": 0.9688565433025358
+        }
+      ]
+    }
+  ]
+  

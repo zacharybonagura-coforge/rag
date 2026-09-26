@@ -1,0 +1,80 @@
+[project]
+name = "rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx==0.28.1",
+    "pgvector==0.3.6",
+    "psycopg[binary]==3.2.3",
+    "pydantic==2.9.2",
+    "pymupdf4llm>=1.28.2",
+    "python-docx>=1.2.0",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=6.1.0",
+    "torch>=2.2",
+]
+
+[project.scripts]
+rag = "rag:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "flake8==7.3.0",
+    "mypy==2.3.1",
+    "pytest==8.3.3",
+    "pytest-cov==7.1.0",
+    "ruff==0.16.5",
+]
+
+[tool.uv.build-backend]
+module-root = ""
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+markers = [
+    "integration: live ingest/retrieve/generate against Postgres + Ollama",
+]
+
+[tool.mypy]
+mypy_path = "src"
+explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = ["pymupdf4llm", "pgvector.psycopg", "rank_bm25"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "src/harness/run_*.py",
+    "src/adapters/factories.py",
+    "src/adapters/*/base.py",
+    "src/adapters/store/pgvector.py",
+    "src/adapters/generation/ollama.py",
+    "src/adapters/embeddings/sentence_transformer.py",
+]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+]

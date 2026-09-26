@@ -1,0 +1,81 @@
+{
+  "document": "gru-minion-handbook-v2",
+  "corpus_file": "data/corpus/gru-minion-handbook-v2.md",
+  "retrieve_k": 5,
+  "questions": [
+    {
+      "id": "gru-briefing-time",
+      "type": "fact",
+      "query": "What time do minions report for the morning duty?",
+      "gold_chunk_ids": ["gru-minion-handbook-v2:v2.0:section-2:sub-1:part-0"],
+      "gold_section": "Daily Operations",
+      "gold_subsection": "Morning Briefing",
+      "must_include": [
+        ["8", "8:00"]
+      ],
+      "must_exclude": ["7:30", "toothbrush"]
+    },
+    {
+      "id": "gru-banana-ration",
+      "type": "fact",
+      "query": "How many bananas may a minion take before noon and after a mission?",
+      "gold_chunk_ids": ["gru-minion-handbook-v2:v2.0:section-2:sub-3"],
+      "gold_section": "Daily Operations",
+      "gold_subsection": "Banana Service",
+      "must_include": [
+        "one banana before noon",
+        ["two after", "two bananas after"]
+      ],
+      "must_exclude": [
+        "two bananas before noon",
+        ["one after", "one banana after"]
+      ]
+    },
+    {
+      "id": "gru-communicator",
+      "type": "fact",
+      "query": "What is the communicator for, and what must minions not do on it?",
+      "gold_chunk_ids": ["gru-minion-handbook-v2:v2.0:section-3"],
+      "gold_section": "Equipment",
+      "gold_subsection": "",
+      "must_include": ["mission"],
+      "must_exclude": []
+    },
+    {
+      "id": "gru-visitor-door",
+      "type": "fact",
+      "query": "What should a minion do if Vector or El Macho show up at the house?",
+      "gold_chunk_ids": [
+        "gru-minion-handbook-v2:v2.0:section-4:part-0",
+        "gru-minion-handbook-v2:v2.0:section-4:part-1"
+      ],
+      "gold_section": "Rules of Conduct",
+      "gold_subsection": "",
+      "must_include": ["Gru"],
+      "must_exclude": ["after 8pm"]
+    },
+    {
+      "id": "gru-alarm-couch",
+      "type": "fact",
+      "query": "Where do minions bring the girls if the alarm sounds off?",
+      "gold_chunk_ids": [
+        "gru-minion-handbook-v2:v2.0:section-5:part-0",
+        "gru-minion-handbook-v2:v2.0:section-5:part-1"
+      ],
+      "gold_section": "Emergency Procedures",
+      "gold_subsection": "",
+      "must_include": ["orange"],
+      "must_exclude": []
+    },
+    {
+      "id": "gru-salary",
+      "type": "unanswerable",
+      "query": "What is a minion's starting salary?",
+      "gold_chunk_ids": [],
+      "gold_section": "",
+      "gold_subsection": "",
+      "must_include": ["The provided policy does not answer this question."],
+      "must_exclude": ["cited from"]
+    }
+  ]
+}
